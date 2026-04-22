@@ -1,16 +1,31 @@
-# React + Vite
+# BoxManager PWA 📦
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema de gestión de pedidos optimizado para dispositivos móviles, diseñado para equipos pequeños que requieren un seguimiento preciso del ciclo de vida de productos (cajas).
 
-Currently, two official plugins are available:
+## 🚀 Características Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **PWA (Progressive Web App)**: Instalable en dispositivos Android e iOS. Funciona con un "Offline Shell" para mayor rapidez.
+- **Gestión de Ciclo de Vida**: Seguimiento de estados: *Pendiente -> En curso -> Listo -> Entregado*.
+- **Registro de Entregas**: Identificación de quién entregó cada pedido o si fue recogido por el cliente.
+- **Edición y Rollback**: Capacidad de corregir datos y revertir estados ante errores humanos.
+- **Interfaz Premium**: Diseño "Dark Mode" con glassmorphism, animaciones suaves y notificaciones tipo toast.
+- **Sincronización en Tiempo Real**: Integración con Supabase para actualizaciones instantáneas entre todos los trabajadores.
 
-## React Compiler
+## 🛠️ Tecnologías
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React 19 + Vite
+- **Estilos**: Vanilla CSS (Custom Design System)
+- **Base de Datos**: Supabase (PostgreSQL)
+- **Animaciones**: Framer Motion
+- **Iconos**: Lucide React
 
-## Expanding the ESLint configuration
+## 📦 Instalación
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clona el repositorio.
+2. Instala las dependencias: `npm install`.
+3. Configura tus credenciales de Supabase en `src/lib/supabase.js`.
+4. Ejecuta el servidor de desarrollo: `npm run dev`.
+5. Para producción: `npm run build`.
+
+---
+Desarrollado para el equipo de BoxManager.
