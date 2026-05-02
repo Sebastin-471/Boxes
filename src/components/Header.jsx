@@ -15,7 +15,7 @@ export default function Header() {
       zIndex: 100
     }}>
       <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Pedidos Cajas</h1>
-      <button className="glass" style={{ 
+      <button aria-label="Perfil de usuario" className="glass" style={{ 
         width: '40px', 
         height: '40px', 
         borderRadius: '12px', 

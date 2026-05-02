@@ -5,12 +5,12 @@ import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getBoxLabel } from '../lib/boxMapping';
 
-const STATUS_FILTERS = ['Todos', 'Creados', 'Preparando', 'Listos'];
+const STATUS_FILTERS = ['Todos', 'Pendiente', 'Preparando', 'Listos'];
 
 const STATUS_DISPLAY = {
-  'CREATED': { label: 'Pendiente', color: '#8b5cf6' },
+  'CREATED': { label: 'Pendiente', color: '#a78bfa' },
   'PREPARING': { label: 'En curso', color: '#f59e0b' },
-  'READY': { label: 'Listo', color: '#3b82f6' },
+  'READY': { label: 'Listo', color: '#60a5fa' },
   'DELIVERED': { label: 'Entregado', color: 'var(--accent-success)' }
 };
 
@@ -19,11 +19,90 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
 
   const filteredOrders = orders.filter(order => {
     if (activeFilter === 'Todos') return true;
-    if (activeFilter === 'Creados') return order.status === 'CREATED';
+    if (activeFilter === 'Pendiente') return order.status === 'CREATED';
     if (activeFilter === 'Preparando') return order.status === 'PREPARING';
     if (activeFilter === 'Listos') return order.status === 'READY';
     return false;
   });
+
+  const renderOrderCard = (order, idx) => {
+    const totalItems = (order.items || []).reduce((acc, item) => acc + item.quantity, 0);
+    const statusInfo = STATUS_DISPLAY[order.status] || STATUS_DISPLAY['CREATED'];
+    
+    return (
+      <motion.div 
+        key={order.id}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: idx * 0.05 }}
+        className="card-glass" 
+        onClick={() => onOrderClick(order)}
+        style={{ cursor: 'pointer', marginBottom: '0' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{order.client_name}</h3>
+          <span className="badge-status" style={{ 
+            background: `${statusInfo.color}22`, 
+            color: statusInfo.color 
+          }}>
+            {statusInfo.label}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>
+            <Truck size={14} />
+            <span>
+              {order.status === 'DELIVERED' 
+                ? `Entregado por: ${order.delivered_by || '?'}`
+                : `Creado: ${format(new Date(order.created_at), "d MMM, h:mm aa", { locale: es })}`
+              }
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>
+            <Package size={14} />
+            <span>{totalItems} cajas</span>
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const renderHistoryGroups = () => {
+    const groups = [];
+    let currentDateStr = null;
+    let currentGroup = [];
+
+    filteredOrders.forEach(order => {
+      const dateObj = new Date(order.delivery_date || order.created_at);
+      const dateStr = format(dateObj, "d 'de' MMMM", { locale: es });
+      
+      if (dateStr !== currentDateStr) {
+        if (currentGroup.length > 0) {
+          groups.push({ dateStr: currentDateStr, orders: currentGroup });
+        }
+        currentDateStr = dateStr;
+        currentGroup = [order];
+      } else {
+        currentGroup.push(order);
+      }
+    });
+
+    if (currentGroup.length > 0) {
+      groups.push({ dateStr: currentDateStr, orders: currentGroup });
+    }
+
+    return groups.map((group) => (
+      <div key={group.dateStr} style={{ marginBottom: '20px' }}>
+        <h4 style={{ fontSize: '0.85rem', color: 'var(--accent-primary)', marginBottom: '12px', paddingBottom: '4px', borderBottom: '1px solid var(--surface-border)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+          {group.dateStr}
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {group.orders.map((order, idx) => renderOrderCard(order, idx))}
+        </div>
+      </div>
+    ));
+  };
 
   if (loading) {
     return (
@@ -67,48 +146,10 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
             exit={{ opacity: 0 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            {filteredOrders.map((order, idx) => {
-              const totalItems = (order.items || []).reduce((acc, item) => acc + item.quantity, 0);
-              const statusInfo = STATUS_DISPLAY[order.status] || STATUS_DISPLAY['CREATED'];
-              
-              return (
-                <motion.div 
-                  key={order.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="card-glass" 
-                  onClick={() => onOrderClick(order)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{order.client_name}</h3>
-                    <span className="badge-status" style={{ 
-                      background: `${statusInfo.color}22`, 
-                      color: statusInfo.color 
-                    }}>
-                      {statusInfo.label}
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>
-                      <Truck size={14} />
-                      <span>
-                        {order.status === 'DELIVERED' 
-                          ? `Entregado por: ${order.delivered_by || '?'}`
-                          : `Creado: ${format(new Date(order.created_at), "d MMM, h:mm aa", { locale: es })}`
-                        }
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>
-                      <Package size={14} />
-                      <span>{totalItems} cajas</span>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {title === 'Historial' 
+              ? renderHistoryGroups() 
+              : filteredOrders.map((order, idx) => renderOrderCard(order, idx))
+            }
           </motion.div>
         ) : (
           <motion.div 

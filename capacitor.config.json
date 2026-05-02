@@ -1,0 +1,5 @@
+{
+  "appId": "com.boxmanager.app",
+  "appName": "BoxManager",
+  "webDir": "dist"
+}

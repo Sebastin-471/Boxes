@@ -10,9 +10,9 @@ import { useToast } from '../lib/ToastContext';
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
 
 const STATUS_MAP = {
-  'CREATED': { label: 'PENDIENTE', order: 1, next: 'PREPARING', nextLabel: 'Empezar Preparación', nextIcon: Play, color: '#8b5cf6', prev: null },
+  'CREATED': { label: 'PENDIENTE', order: 1, next: 'PREPARING', nextLabel: 'Empezar Preparación', nextIcon: Play, color: '#a78bfa', prev: null },
   'PREPARING': { label: 'EN CURSO', order: 2, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: '#f59e0b', prev: 'CREATED' },
-  'READY': { label: 'LISTO', order: 3, next: 'DELIVERED', nextLabel: 'Marcar como Entregado', nextIcon: CheckCircle2, color: '#3b82f6', prev: 'PREPARING' },
+  'READY': { label: 'LISTO', order: 3, next: 'DELIVERED', nextLabel: 'Marcar como Entregado', nextIcon: CheckCircle2, color: '#60a5fa', prev: 'PREPARING' },
   'DELIVERED': { label: 'ENTREGADO', order: 4, next: null, color: 'var(--accent-success)', prev: 'READY' }
 };
 
