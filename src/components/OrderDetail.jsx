@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
-import { getBoxLabel } from '../lib/boxMapping';
+import { useProducts } from '../lib/useProducts';
 import { useToast } from '../lib/ToastContext';
 
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
@@ -18,6 +18,7 @@ const STATUS_MAP = {
 
 export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
   const toast = useToast();
+  const { getProductLabel } = useProducts();
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const totalItems = (order.items || []).reduce((acc, item) => acc + item.quantity, 0);
@@ -124,7 +125,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido del Pedido</p>
         {(order.items || []).map((item, idx) => (
           <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '1rem' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>{getBoxLabel(item.boxType || item.type)}</span>
+            <span style={{ color: 'var(--text-secondary)' }}>{getProductLabel(item.boxType || item.type)}</span>
             <span style={{ fontWeight: 600 }}>{item.quantity}x</span>
           </div>
         ))}

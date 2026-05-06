@@ -3,20 +3,26 @@ import Header from './components/Header';
 import OrderForm from './components/OrderForm';
 import OrderList from './components/OrderList';
 import OrderDetail from './components/OrderDetail';
+import Dashboard from './components/Dashboard';
+import ReturnForm from './components/ReturnForm';
+import ReturnList from './components/ReturnList';
+import Analytics from './components/Analytics';
 import { supabase } from './lib/supabase';
-import { Package, PlusCircle, History, RefreshCw, Bell } from 'lucide-react';
+import { Package, PlusCircle, History, RefreshCw, RotateCcw, BarChart3, LayoutDashboard } from 'lucide-react';
 import { motion, useAnimation } from 'framer-motion';
 import { useToast } from './lib/ToastContext';
 
 function App() {
   const toast = useToast();
   const controls = useAnimation();
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'new', 'history'
+  const [activeTab, setActiveTab] = useState('resumen'); // 'resumen', 'dashboard', 'new', 'returns', 'analytics', 'history'
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [returns, setReturns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showReturnForm, setShowReturnForm] = useState(false);
 
   // Request Notification Permission
   useEffect(() => {
@@ -57,9 +63,30 @@ function App() {
     }
   };
 
+  const fetchReturns = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('returns')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setReturns(data || []);
+    } catch (error) {
+      console.error('Error fetching returns:', error);
+      setReturns([]);
+    }
+  };
+
+  const fetchAll = async () => {
+    await Promise.all([fetchOrders(), fetchReturns()]);
+  };
+
   useEffect(() => {
-    fetchOrders();
-    const subscription = supabase
+    fetchAll();
+
+    // Orders realtime subscription
+    const ordersSubscription = supabase
       .channel('schema-db-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
         fetchOrders();
@@ -75,7 +102,21 @@ function App() {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(subscription); };
+    // Returns realtime subscription
+    const returnsSubscription = supabase
+      .channel('returns-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'returns' }, (payload) => {
+        fetchReturns();
+        if (payload.eventType === 'INSERT') {
+          sendNotification('Nueva Devolución', `Devolución registrada de ${payload.new.client_name}`);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ordersSubscription);
+      supabase.removeChannel(returnsSubscription);
+    };
   }, []);
 
   const pendingOrders = orders.filter(o => o.status !== 'DELIVERED');
@@ -117,6 +158,12 @@ function App() {
     }
 
     switch (activeTab) {
+      case 'resumen':
+        return (
+          <div className="view-container">
+            <Dashboard orders={orders} returns={returns} />
+          </div>
+        );
       case 'dashboard':
         return (
           <OrderList 
@@ -133,6 +180,31 @@ function App() {
             setActiveTab('dashboard');
           }} />
         );
+      case 'returns':
+        if (showReturnForm) {
+          return (
+            <ReturnForm onReturnCreated={() => {
+              fetchReturns();
+              setShowReturnForm(false);
+            }} />
+          );
+        }
+        return (
+          <div>
+            <ReturnList returns={returns} loading={loading} />
+            <div style={{ padding: '0 20px 20px' }}>
+              <button
+                className="btn-submit"
+                onClick={() => setShowReturnForm(true)}
+                style={{ background: '#f59e0b' }}
+              >
+                <RotateCcw size={20} /> Nueva Devolución
+              </button>
+            </div>
+          </div>
+        );
+      case 'analytics':
+        return <Analytics orders={orders} returns={returns} />;
       case 'history':
         return (
           <OrderList 
@@ -150,11 +222,18 @@ function App() {
   const handlePullToRefresh = async (event, info) => {
     if (info.offset.y > 80 && !refreshing) {
       setRefreshing(true);
-      await fetchOrders();
+      await fetchAll();
       setRefreshing(false);
       toast.info('Datos actualizados');
     }
   };
+
+  // Reset return form view when switching tabs
+  useEffect(() => {
+    if (activeTab !== 'returns') {
+      setShowReturnForm(false);
+    }
+  }, [activeTab]);
 
   return (
     <div className="app-container" style={{ overflow: 'hidden' }}>
@@ -186,24 +265,45 @@ function App() {
       {!selectedOrder && (
         <nav className="bottom-nav">
           <button 
+            onClick={() => setActiveTab('resumen')}
+            className={`nav-btn ${activeTab === 'resumen' ? 'active' : ''}`}
+          >
+            <LayoutDashboard size={20} />
+            <span>Resumen</span>
+          </button>
+          <button 
             onClick={() => setActiveTab('dashboard')}
             className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           >
-            <Package size={24} />
+            <Package size={20} />
             <span>Pedidos</span>
           </button>
           <button 
             onClick={() => setActiveTab('new')}
             className={`nav-btn ${activeTab === 'new' ? 'active' : ''}`}
           >
-            <PlusCircle size={28} style={{ color: activeTab === 'new' ? '#8b5cf6' : 'var(--text-tertiary)' }} />
+            <PlusCircle size={22} style={{ color: activeTab === 'new' ? '#8b5cf6' : 'var(--text-tertiary)' }} />
             <span>Crear</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('returns')}
+            className={`nav-btn ${activeTab === 'returns' ? 'active' : ''}`}
+          >
+            <RotateCcw size={20} style={{ color: activeTab === 'returns' ? '#f59e0b' : 'var(--text-tertiary)' }} />
+            <span>Devolver</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('analytics')}
+            className={`nav-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+          >
+            <BarChart3 size={20} />
+            <span>Análisis</span>
           </button>
           <button 
             onClick={() => setActiveTab('history')}
             className={`nav-btn ${activeTab === 'history' ? 'active' : ''}`}
           >
-            <History size={24} />
+            <History size={20} />
             <span>Historial</span>
           </button>
         </nav>

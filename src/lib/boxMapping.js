@@ -4,6 +4,7 @@ export const BOX_MAPPING = {
   'XV': 'Caja Copa de 15 Años',
   'PEIN_G': 'Caja Peineta Grande',
   'PEIN_C': 'Caja Peineta Chica',
+  'PEIN_CUAD': 'Caja Peineta Cuadrada',
   'TIARA_A': 'Caja Tiara Ancha',
   'TIARA_M': 'Caja Tiara Mediana',
   'TIARA_D': 'Caja Tiara Delgada',
