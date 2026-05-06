@@ -1,7 +1,7 @@
 import React from 'react';
-import { User } from 'lucide-react';
+import { User, Menu } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
   return (
     <header style={{ 
       padding: '20px', 
@@ -14,7 +14,15 @@ export default function Header() {
       top: 0,
       zIndex: 100
     }}>
-      <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Pedidos Cajas</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <button 
+          onClick={onMenuClick}
+          style={{ background: 'none', border: 'none', color: 'white', padding: '4px', display: 'flex', alignItems: 'center' }}
+        >
+          <Menu size={24} />
+        </button>
+        <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Pedidos Cajas</h1>
+      </div>
       <button aria-label="Perfil de usuario" className="glass" style={{ 
         width: '40px', 
         height: '40px', 

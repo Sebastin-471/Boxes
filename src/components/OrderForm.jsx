@@ -4,10 +4,13 @@ import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../lib/ToastContext';
 import { useProducts } from '../lib/useProducts';
+import { useClients } from '../lib/useClients';
+import ClientAutocomplete from './ClientAutocomplete';
 
 export default function OrderForm({ onOrderCreated, initialData = null }) {
   const toast = useToast();
   const { products, loading: productsLoading } = useProducts();
+  const { addClient } = useClients();
   const [step, setStep] = useState(1);
   const [clientName, setClientName] = useState(initialData?.client_name || '');
   const [notes, setNotes] = useState(initialData?.notes || '');
@@ -46,6 +49,9 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      // 1. Asegurar que el cliente existe en la tabla de clientes
+      await addClient(clientName);
+
       const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => ({ boxType, quantity }));
       
       const payload = {
@@ -95,11 +101,10 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
       <p className="step-subtitle">Paso 1 de 3</p>
 
       <label className="input-label">Nombre del Cliente</label>
-      <input 
-        className="custom-input" 
-        placeholder="A quién se entrega..." 
+      <ClientAutocomplete 
         value={clientName}
-        onChange={(e) => setClientName(e.target.value)}
+        onChange={setClientName}
+        placeholder="A quién se entrega..."
       />
 
       <label className="input-label">Notas (Opcional)</label>

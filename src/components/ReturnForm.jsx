@@ -4,10 +4,13 @@ import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../lib/ToastContext';
 import { useProducts } from '../lib/useProducts';
+import { useClients } from '../lib/useClients';
+import ClientAutocomplete from './ClientAutocomplete';
 
 export default function ReturnForm({ onReturnCreated }) {
   const toast = useToast();
   const { products, loading: productsLoading } = useProducts();
+  const { addClient } = useClients();
   const [step, setStep] = useState(1);
   const [clientName, setClientName] = useState('');
   const [notes, setNotes] = useState('');
@@ -37,6 +40,9 @@ export default function ReturnForm({ onReturnCreated }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      // Asegurar que el cliente existe
+      await addClient(clientName);
+
       const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => ({ boxType, quantity }));
 
       const payload = {
@@ -72,11 +78,10 @@ export default function ReturnForm({ onReturnCreated }) {
       <p className="step-subtitle" style={{ marginLeft: '52px' }}>Paso 1 de 3</p>
 
       <label className="input-label">¿De quién es la devolución?</label>
-      <input
-        className="custom-input"
-        placeholder="Nombre del cliente..."
+      <ClientAutocomplete 
         value={clientName}
-        onChange={(e) => setClientName(e.target.value)}
+        onChange={setClientName}
+        placeholder="Nombre del cliente..."
       />
 
       <label className="input-label">Notas (Opcional)</label>

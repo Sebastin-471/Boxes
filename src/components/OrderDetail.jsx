@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Package, Truck, Calendar, CheckCircle2, User, X, Play, PackageCheck, Edit3, RotateCcw } from 'lucide-react';
+import { ChevronLeft, Package, Truck, Calendar, CheckCircle2, User, X, Play, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -49,6 +49,29 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
       onStatusUpdate();
     } catch (error) {
       toast.error('Error al actualizar: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar el pedido de "${order.client_name}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', order.id);
+
+      if (error) throw error;
+      toast.success('Pedido eliminado correctamente');
+      onBack(); // Volver a la lista
+      onStatusUpdate(); // Refrescar lista global
+    } catch (error) {
+      toast.error('Error al eliminar: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -186,6 +209,30 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
           )}
         </button>
       )}
+
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        style={{
+          marginTop: '12px',
+          width: '100%',
+          background: 'none',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          color: '#ef4444',
+          padding: '14px',
+          borderRadius: '14px',
+          fontSize: '0.95rem',
+          fontWeight: '600',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          cursor: 'pointer'
+        }}
+      >
+        <Trash2 size={18} />
+        Eliminar Registro
+      </button>
 
       {/* Delivery Selection Modal */}
       <AnimatePresence>

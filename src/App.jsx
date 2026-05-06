@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import ReturnForm from './components/ReturnForm';
 import ReturnList from './components/ReturnList';
 import Analytics from './components/Analytics';
+import SideDrawer from './components/SideDrawer';
 import { supabase } from './lib/supabase';
 import { Package, PlusCircle, History, RefreshCw, RotateCcw, BarChart3, LayoutDashboard } from 'lucide-react';
 import { motion, useAnimation } from 'framer-motion';
@@ -23,6 +24,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Request Notification Permission
   useEffect(() => {
@@ -237,7 +239,14 @@ function App() {
 
   return (
     <div className="app-container" style={{ overflow: 'hidden' }}>
-      {!selectedOrder && <Header />}
+      {!selectedOrder && <Header onMenuClick={() => setIsDrawerOpen(true)} />}
+      
+      <SideDrawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        onNavigate={setActiveTab}
+        activeTab={activeTab}
+      />
       
       <motion.div 
         drag="y"
@@ -291,20 +300,6 @@ function App() {
           >
             <RotateCcw size={20} style={{ color: activeTab === 'returns' ? '#f59e0b' : 'var(--text-tertiary)' }} />
             <span>Devolver</span>
-          </button>
-          <button 
-            onClick={() => setActiveTab('analytics')}
-            className={`nav-btn ${activeTab === 'analytics' ? 'active' : ''}`}
-          >
-            <BarChart3 size={20} />
-            <span>Análisis</span>
-          </button>
-          <button 
-            onClick={() => setActiveTab('history')}
-            className={`nav-btn ${activeTab === 'history' ? 'active' : ''}`}
-          >
-            <History size={20} />
-            <span>Historial</span>
           </button>
         </nav>
       )}

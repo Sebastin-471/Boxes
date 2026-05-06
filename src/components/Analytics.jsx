@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { BarChart3, TrendingUp, ChevronDown } from 'lucide-react';
+import { BarChart3, TrendingUp, ChevronDown, Download } from 'lucide-react';
+import { exportToCSV } from '../lib/exportUtils';
 import { motion } from 'framer-motion';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -47,6 +48,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function Analytics({ orders, returns }) {
   const { products, getProductLabel } = useProducts();
   const [monthsToShow, setMonthsToShow] = useState(6);
+
+  const handleExport = () => {
+    exportToCSV(orders, `pedidos-cajas-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+  };
 
   // Calculate monthly data
   const monthlyData = useMemo(() => {
@@ -150,16 +155,34 @@ export default function Analytics({ orders, returns }) {
 
   return (
     <div className="view-container">
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-          <div style={{ background: 'rgba(139,92,246,0.15)', borderRadius: '12px', padding: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BarChart3 size={22} color="#8b5cf6" />
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Análisis</h2>
+          <div>
+            <h2 className="step-title" style={{ marginBottom: 0 }}>Análisis</h2>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>Estadísticas de los últimos {monthsToShow} meses</p>
+          </div>
         </div>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginLeft: '52px' }}>
-          Estadísticas de los últimos {monthsToShow} meses
-        </p>
+
+        <button 
+          onClick={handleExport}
+          style={{ 
+            background: 'var(--surface-color)', 
+            border: 'none', 
+            borderRadius: '10px', 
+            padding: '10px', 
+            color: 'var(--accent-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+          title="Exportar a CSV"
+        >
+          <Download size={20} />
+        </button>
       </div>
 
       {/* Period selector */}

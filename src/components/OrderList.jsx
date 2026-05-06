@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, Truck, ChevronRight, Box } from 'lucide-react';
+import { Package, Truck, ChevronRight, Box, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,13 +16,18 @@ const STATUS_DISPLAY = {
 
 export default function OrderList({ orders, onOrderClick, title, loading }) {
   const [activeFilter, setActiveFilter] = useState('Todos');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredOrders = orders.filter(order => {
-    if (activeFilter === 'Todos') return true;
-    if (activeFilter === 'Pendiente') return order.status === 'CREATED';
-    if (activeFilter === 'Preparando') return order.status === 'PREPARING';
-    if (activeFilter === 'Listos') return order.status === 'READY';
-    return false;
+    const matchesFilter = 
+      activeFilter === 'Todos' ||
+      (activeFilter === 'Pendiente' && order.status === 'CREATED') ||
+      (activeFilter === 'Preparando' && order.status === 'PREPARING') ||
+      (activeFilter === 'Listos' && order.status === 'READY');
+    
+    const matchesSearch = order.client_name.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesFilter && matchesSearch;
   });
 
   const renderOrderCard = (order, idx) => {
