@@ -5,10 +5,10 @@
 
 /* Utility Classes */
 .skeleton {
-  background: linear-gradient(90deg, #121212 25%, #1a1a1a 50%, #121212 75%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: var(--radius-md);
 }
 
 @keyframes shimmer {
@@ -19,10 +19,10 @@
 .spinner-small {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.08);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
 
 @keyframes spin {
@@ -44,29 +44,36 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 0 20px;
+  padding: 4px 0 16px;
   scrollbar-width: none;
 }
 
 .chip-container::-webkit-scrollbar { display: none; }
 
 .chip {
-  padding: 8px 20px;
+  padding: 8px 18px;
   border-radius: 24px;
-  background: #1a1a1a;
+  background: var(--surface-color);
   color: var(--text-tertiary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  border: 1px solid #222;
+  border: 1px solid var(--surface-border);
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chip:active {
+  transform: scale(0.96);
 }
 
 .chip.active {
   background: white;
-  color: black;
+  color: #0a0a0a;
   border-color: white;
+  font-weight: 600;
 }
 
 /* Empty State */
@@ -80,44 +87,63 @@
 }
 
 .empty-icon {
-  width: 80px;
-  height: 80px;
-  background: #151515;
-  border-radius: 20px;
+  width: 72px;
+  height: 72px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
-  margin-bottom: 24px;
+  color: var(--text-tertiary);
+  margin-bottom: 20px;
 }
 
 /* Progress Bar */
 .progress-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 12px;
 }
 
 .progress-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #333;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .progress-dot.active {
   background: var(--accent-primary);
-  box-shadow: 0 0 8px var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
 }
 
 .progress-line {
   flex: 1;
   height: 2px;
-  background: #333;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 1px;
 }
 
 .progress-line.active {
-  background: var(--accent-primary);
+  background: linear-gradient(90deg, var(--accent-primary), rgba(139, 92, 246, 0.3));
+}
+
+/* Search styles */
+.search-container {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
 }

@@ -16,131 +16,125 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="drawer-backdrop"
             style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.6)',
-              backdropFilter: 'blur(4px)',
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0, 0, 0, 0.7)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
               zIndex: 1000
             }}
           />
 
-          {/* Drawer */}
           <motion.div
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="drawer-content"
+            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
             style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              width: '85%',
-              maxWidth: '320px',
+              position: 'fixed', top: 0, left: 0, bottom: 0,
+              width: '82%', maxWidth: '300px',
               background: 'var(--bg-color)',
               borderRight: '1px solid var(--surface-border)',
               zIndex: 1001,
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '24px'
+              display: 'flex', flexDirection: 'column',
+              padding: '24px 20px'
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '36px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '40px', height: '40px', background: 'var(--accent-primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.2rem' }}>
+                <div style={{
+                  width: '36px', height: '36px',
+                  background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                  borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 800, fontSize: '1rem', color: 'white'
+                }}>
                   B
                 </div>
-                <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>BoxManager</span>
+                <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>BoxManager</span>
               </div>
-              <button onClick={onClose} className="btn-close" style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', padding: '4px', cursor: 'pointer' }}>
-                <X size={24} />
-              </button>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={onClose}
+                style={{ background: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-tertiary)', padding: '6px', cursor: 'pointer', display: 'flex' }}
+              >
+                <X size={18} />
+              </motion.button>
             </div>
 
+            {/* Menu */}
             <div style={{ flex: 1 }}>
-              <p className="drawer-section-title" style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontWeight: 600 }}>
-                Menú Principal
+              <p style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '14px', fontWeight: 600, paddingLeft: '4px' }}>
+                Navegación
               </p>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {menuItems.map((item) => (
-                  <button
+                  <motion.button
                     key={item.id}
-                    onClick={() => {
-                      onNavigate(item.id);
-                      onClose();
-                    }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => { onNavigate(item.id); onClose(); }}
                     className={`drawer-item ${activeTab === item.id ? 'active' : ''}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '14px',
-                      width: '100%',
-                      padding: '14px 16px',
-                      background: activeTab === item.id ? 'rgba(139, 92, 246, 0.1)' : 'none',
-                      border: 'none',
-                      color: activeTab === item.id ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                      borderRadius: '14px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
                   >
-                    <item.icon size={20} color={activeTab === item.id ? 'var(--accent-primary)' : 'var(--text-tertiary)'} />
-                    <span style={{ fontWeight: activeTab === item.id ? 600 : 500, flex: 1, textAlign: 'left' }}>{item.label}</span>
-                    <ChevronRight size={16} opacity={0.5} />
-                  </button>
+                    <div style={{
+                      width: '36px', height: '36px',
+                      background: activeTab === item.id ? `${item.color}20` : 'var(--surface-color)',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                      <item.icon size={18} color={activeTab === item.id ? item.color : 'var(--text-tertiary)'} />
+                    </div>
+                    <span style={{ fontWeight: activeTab === item.id ? 600 : 400, flex: 1, textAlign: 'left' }}>{item.label}</span>
+                    <ChevronRight size={14} style={{ opacity: 0.3 }} />
+                  </motion.button>
                 ))}
               </div>
 
               <div style={{ marginTop: '32px' }}>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontWeight: 600 }}>
+                <p style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '14px', fontWeight: 600, paddingLeft: '4px' }}>
                   Sistema
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {secondaryItems.map((item) => (
-                    <button
+                    <motion.button
                       key={item.id}
+                      whileTap={{ scale: 0.97 }}
                       className="drawer-item"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '14px',
-                        width: '100%',
-                        padding: '14px 16px',
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--text-tertiary)',
-                        borderRadius: '14px',
-                        cursor: 'pointer'
-                      }}
                     >
-                      <item.icon size={20} />
-                      <span style={{ fontWeight: 500, flex: 1, textAlign: 'left' }}>{item.label}</span>
-                    </button>
+                      <div style={{
+                        width: '36px', height: '36px',
+                        background: 'var(--surface-color)',
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                      }}>
+                        <item.icon size={18} color="var(--text-tertiary)" />
+                      </div>
+                      <span style={{ fontWeight: 400, flex: 1, textAlign: 'left' }}>{item.label}</span>
+                    </motion.button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="drawer-footer" style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Package size={20} color="#8b5cf6" />
+            {/* Footer */}
+            <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '40px', height: '40px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--surface-color), var(--surface-hover))',
+                border: '1px solid var(--surface-border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>
+                <Package size={18} color="var(--accent-primary)" />
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '0.9rem', fontWeight: 600, margin: 0 }}>Luis Administrador</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', margin: 0 }}>Gestión de Registros</p>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Luis Administrador</p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', margin: 0 }}>Gestión de Registros</p>
               </div>
             </div>
           </motion.div>

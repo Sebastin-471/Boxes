@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 
 // Layout & Context
 import Header from './components/layout/Header';
 import SideDrawer from './components/layout/SideDrawer';
 import BottomNav from './components/layout/BottomNav';
-import { ToastProvider } from './context/ToastContext';
+import { ToastProvider, useToast } from './context/ToastContext';
 
 // Pages
 import Resumen from './pages/Resumen';

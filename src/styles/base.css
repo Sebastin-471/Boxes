@@ -6,7 +6,9 @@
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--bg-color);
+  overscroll-behavior-y: contain;
 }
 
 #root {
@@ -14,54 +16,98 @@ body {
   max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .view-container {
-  padding: 20px;
+  padding: 20px 16px;
   flex: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .page-fade {
   animation: fadeIn 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* Typography */
 .section-title {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   margin-bottom: 16px;
   font-weight: 600;
 }
 
 .section-subtitle {
-  font-size: 0.75rem; 
-  color: var(--text-tertiary); 
-  margin-bottom: 12px; 
-  text-transform: uppercase; 
-  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 .section-divider {
-  font-size: 0.85rem; 
-  color: var(--accent-primary); 
-  margin-bottom: 12px; 
-  padding-bottom: 4px; 
-  border-bottom: 1px solid var(--surface-border); 
-  text-transform: uppercase; 
-  letter-spacing: 0.05em; 
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--surface-border);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   font-weight: 600;
 }
 
 .view-title {
-  font-size: 1.75rem; 
-  font-weight: 600; 
-  margin-bottom: 24px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.step-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.step-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-primary);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
