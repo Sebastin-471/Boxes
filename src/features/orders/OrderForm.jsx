@@ -9,6 +9,7 @@ import ClientAutocomplete from '../clients/ClientAutocomplete';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { haptics } from '../../utils/haptics';
+import { markOwnAction } from '../../utils/notificationService';
 
 export default function OrderForm({ onOrderCreated, initialData = null }) {
   const toast = useToast();
@@ -77,16 +78,13 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
           .insert([payload])
           .select();
         error = err;
-        
-        if (!error && data) {
-          await supabase.from('notifications').insert([{
-            order_id: data[0].id,
-            message: `Nuevo pedido: ${clientName} (${totalCajas} cajas)`
-          }]);
+        if (data && data[0]) {
+          markOwnAction(data[0].id);
         }
       }
 
       if (error) throw error;
+      if (initialData) markOwnAction(initialData.id);
 
       haptics.success();
       toast.success(initialData ? 'Pedido actualizado' : 'Pedido creado con éxito');

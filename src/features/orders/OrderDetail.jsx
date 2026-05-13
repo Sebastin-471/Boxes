@@ -9,6 +9,7 @@ import { useToast } from '../../context/ToastContext';
 import Card from '../../components/common/Card';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
+import { markOwnAction } from '../../utils/notificationService';
 
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
 
@@ -46,6 +47,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         .eq('id', order.id);
 
       if (error) throw error;
+      markOwnAction(order.id);
       toast.success(`Pedido: ${newStatus === 'DELIVERED' ? 'Entregado' : STATUS_MAP[newStatus].label}`);
       setShowModal(false);
       
@@ -73,6 +75,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         .eq('id', order.id);
 
       if (error) throw error;
+      markOwnAction(order.id);
       toast.success('Pedido eliminado correctamente');
       onBack();
       onStatusUpdate();

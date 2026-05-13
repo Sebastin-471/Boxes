@@ -22,6 +22,8 @@ import OrderForm from './features/orders/OrderForm';
 // Hooks
 import { useOrders } from './features/orders/useOrders';
 import { useReturns } from './features/returns/useReturns';
+import { useRealtimeNotifications } from './hooks/useRealtimeNotifications';
+import { requestNotificationPermission } from './utils/notificationService';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState('resumen');
@@ -33,6 +35,18 @@ function AppContent() {
   const { orders, setOrders, loading: ordersLoading, refetch: refetchOrders } = useOrders();
   const { returns, loading: returnsLoading, refetch: refetchReturns } = useReturns();
   const toast = useToast();
+
+  useRealtimeNotifications();
+
+  // Request notification permission on first user interaction
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      requestNotificationPermission();
+      window.removeEventListener('click', handleFirstInteraction);
+    };
+    window.addEventListener('click', handleFirstInteraction);
+    return () => window.removeEventListener('click', handleFirstInteraction);
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => {

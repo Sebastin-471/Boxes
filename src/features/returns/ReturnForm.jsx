@@ -9,6 +9,7 @@ import ClientAutocomplete from '../clients/ClientAutocomplete';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { haptics } from '../../utils/haptics';
+import { markOwnAction } from '../../utils/notificationService';
 
 export default function ReturnForm({ onReturnCreated }) {
   const toast = useToast();
@@ -54,11 +55,16 @@ export default function ReturnForm({ onReturnCreated }) {
         created_by: 'Luis'
       };
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('returns')
-        .insert([payload]);
+        .insert([payload])
+        .select();
 
       if (error) throw error;
+      
+      if (data && data[0]) {
+        markOwnAction(data[0].id);
+      }
 
       haptics.success();
       toast.success('Devolución registrada con éxito');
