@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useClients } from '../lib/useClients';
+import { useClients } from './useClients';
+import Card from '../../components/common/Card';
 
 export default function ClientAutocomplete({ value, onChange, placeholder = "Nombre del cliente..." }) {
   const { clients, loading } = useClients();
@@ -79,6 +80,7 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
                   onChange(client.name);
                   setShowSuggestions(false);
                 }}
+                className="suggestion-item"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -93,8 +95,6 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
                   cursor: 'pointer',
                   transition: 'background 0.2s'
                 }}
-                onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
-                onMouseLeave={(e) => e.target.style.background = 'none'}
               >
                 <User size={16} color="var(--accent-primary)" />
                 <span style={{ fontSize: '0.9rem' }}>{client.name}</span>
@@ -103,6 +103,7 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
 
             {value.trim() !== '' && !clients.some(c => c.name.toLowerCase() === value.toLowerCase()) && (
               <div
+                className="suggestion-hint"
                 style={{
                   padding: '8px 12px',
                   fontSize: '0.75rem',

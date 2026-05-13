@@ -1,0 +1,111 @@
+/* Cards */
+.card-glass {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* Badges */
+.badge-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Buttons */
+.btn-nav, .btn-submit {
+  border: none;
+  border-radius: 16px;
+  padding: 18px;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-nav {
+  background: var(--surface-color);
+  color: var(--text-tertiary);
+}
+
+.btn-nav.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.btn-submit {
+  background: var(--accent-success);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+}
+
+/* Forms */
+.input-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.custom-input, .custom-textarea {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--text-primary);
+  width: 100%;
+  font-size: 1rem;
+  margin-bottom: 24px;
+  transition: all 0.2s;
+}
+
+.custom-input:focus, .custom-textarea:focus {
+  outline: none;
+  border-color: var(--text-tertiary);
+  background: var(--surface-hover);
+}
+
+/* Box items */
+.box-item {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.box-item.selected {
+  border-color: var(--accent-primary);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.box-item.return-selected {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.qty-input {
+  background: #2a2a2a;
+  border: none;
+  border-radius: 8px;
+  width: 80px;
+  height: 40px;
+  textAlign: center;
+  color: white;
+  fontWeight: 600;
+  fontSize: 1rem;
+}

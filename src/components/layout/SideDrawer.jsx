@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BarChart3, Settings, LogOut, Package, Info, ChevronRight } from 'lucide-react';
+import { X, BarChart3, Package, Info, ChevronRight } from 'lucide-react';
 
 export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
   const menuItems = [
@@ -22,6 +22,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            className="drawer-backdrop"
             style={{
               position: 'fixed',
               top: 0,
@@ -40,6 +41,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="drawer-content"
             style={{
               position: 'fixed',
               top: 0,
@@ -62,13 +64,13 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
                 </div>
                 <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>BoxManager</span>
               </div>
-              <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', padding: '4px' }}>
+              <button onClick={onClose} className="btn-close" style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', padding: '4px', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
 
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontWeight: 600 }}>
+              <p className="drawer-section-title" style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontWeight: 600 }}>
                 Menú Principal
               </p>
               
@@ -80,6 +82,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
                       onNavigate(item.id);
                       onClose();
                     }}
+                    className={`drawer-item ${activeTab === item.id ? 'active' : ''}`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -109,6 +112,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
                   {secondaryItems.map((item) => (
                     <button
                       key={item.id}
+                      className="drawer-item"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -130,7 +134,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
               </div>
             </div>
 
-            <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="drawer-footer" style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Package size={20} color="#8b5cf6" />
               </div>

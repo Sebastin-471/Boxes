@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from './supabase';
+import { supabase } from '../../api/client';
 
 export function useClients() {
   const [clients, setClients] = useState([]);

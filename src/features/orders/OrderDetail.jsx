@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Package, Truck, Calendar, CheckCircle2, User, X, Play, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronLeft, Truck, Calendar, CheckCircle2, User, X, Play, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabase';
-import { useProducts } from '../lib/useProducts';
-import { useToast } from '../lib/ToastContext';
+import { supabase } from '../../api/client';
+import { useProducts } from '../../hooks/useProducts';
+import { useToast } from '../../context/ToastContext';
+import Card from '../../components/common/Card';
+import Badge from '../../components/common/Badge';
+import Button from '../../components/common/Button';
 
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
 
@@ -33,7 +36,6 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         updateData.delivery_date = new Date().toISOString();
         updateData.delivered_by = deliverer;
       } else {
-        // Clear delivery data if rolling back
         updateData.delivery_date = null;
         updateData.delivered_by = null;
       }
@@ -68,8 +70,8 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
 
       if (error) throw error;
       toast.success('Pedido eliminado correctamente');
-      onBack(); // Volver a la lista
-      onStatusUpdate(); // Refrescar lista global
+      onBack();
+      onStatusUpdate();
     } catch (error) {
       toast.error('Error al eliminar: ' + error.message);
     } finally {
@@ -100,20 +102,22 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button onClick={onBack} style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+          <button onClick={onBack} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
             <ChevronLeft size={20} />
           </button>
           <h2 className="step-title" style={{ marginBottom: 0 }}>Detalles</h2>
         </div>
-        <button 
+        <Button 
+          variant="secondary"
           onClick={() => onEdit(order)}
-          style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
+          icon={Edit3}
+          style={{ padding: '8px 16px', fontSize: '0.9rem' }}
         >
-          <Edit3 size={16} /> Editar
-        </button>
+          Editar
+        </Button>
       </div>
 
-      <div className="card-glass" style={{ position: 'relative' }}>
+      <Card style={{ position: 'relative' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{order.client_name}</h3>
           <div style={{ 
@@ -128,7 +132,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Calendar size={14} />
+            <User size={14} />
             <span>Creado por: <strong style={{color: 'white'}}>{order.created_by || 'Luis'}</strong></span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -142,10 +146,10 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
-      <div className="card-glass">
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido del Pedido</p>
+      <Card>
+        <p className="section-subtitle">Contenido del Pedido</p>
         {(order.items || []).map((item, idx) => (
           <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '1rem' }}>
             <span style={{ color: 'var(--text-secondary)' }}>{getProductLabel(item.boxType || item.type)}</span>
@@ -156,21 +160,19 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
           <span style={{ fontWeight: 600 }}>Total</span>
           <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{totalItems} cajas</span>
         </div>
-      </div>
+      </Card>
 
       {order.notes && (
-        <div className="card-glass">
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notas</p>
+        <Card>
+          <p className="section-subtitle">Notas</p>
           <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>{order.notes}</p>
-        </div>
+        </Card>
       )}
 
-      <div className="card-glass">
+      <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <span style={{ fontSize: '1rem' }}>Estado</span>
-          <span className="badge-status" style={{ background: `${currentStatusInfo.color}22`, color: currentStatusInfo.color }}>
-            {currentStatusInfo.label}
-          </span>
+          <Badge color={currentStatusInfo.color}>{currentStatusInfo.label}</Badge>
         </div>
         
         {renderProgressBar()}
@@ -190,49 +192,30 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
             <RotateCcw size={14} /> {loading ? '...' : 'Volver al estado anterior'}
           </button>
         )}
-      </div>
+      </Card>
 
       {currentStatusInfo.next && (
-        <button 
-          className="btn-submit" 
-          disabled={loading}
+        <Button 
+          variant={currentStatusInfo.next === 'DELIVERED' ? 'success' : 'primary'}
+          loading={loading}
           onClick={() => currentStatusInfo.next === 'DELIVERED' ? setShowModal(true) : handleUpdateStatus(currentStatusInfo.next)}
-          style={{ 
-            marginTop: '20px', 
-            background: currentStatusInfo.next === 'DELIVERED' ? 'var(--accent-success)' : 'var(--accent-primary)' 
-          }}
+          icon={currentStatusInfo.nextIcon}
+          style={{ marginTop: '20px', background: currentStatusInfo.next === 'DELIVERED' ? 'var(--accent-success)' : 'var(--accent-primary)' }}
         >
-          {loading ? 'Actualizando...' : (
-            <>
-              <currentStatusInfo.nextIcon size={20} /> {currentStatusInfo.nextLabel}
-            </>
-          )}
-        </button>
+          {currentStatusInfo.nextLabel}
+        </Button>
       )}
 
-      <button
+      <Button
+        variant="danger"
+        ghost
         onClick={handleDelete}
         disabled={loading}
-        style={{
-          marginTop: '12px',
-          width: '100%',
-          background: 'none',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-          color: '#ef4444',
-          padding: '14px',
-          borderRadius: '14px',
-          fontSize: '0.95rem',
-          fontWeight: '600',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          cursor: 'pointer'
-        }}
+        icon={Trash2}
+        style={{ marginTop: '12px', background: 'none', border: '1px solid rgba(239, 68, 68, 0.3)' }}
       >
-        <Trash2 size={18} />
         Eliminar Registro
-      </button>
+      </Button>
 
       {/* Delivery Selection Modal */}
       <AnimatePresence>
@@ -243,6 +226,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
+              className="modal-backdrop"
               style={{ 
                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
                 background: 'rgba(0,0,0,0.8)', zIndex: 1000, backdropFilter: 'blur(4px)' 
@@ -252,6 +236,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
               initial={{ y: 300 }}
               animate={{ y: 0 }}
               exit={{ y: 300 }}
+              className="modal-content"
               style={{ 
                 position: 'fixed', bottom: 0, left: 0, right: 0, 
                 background: 'var(--bg-color)', zIndex: 1001, 
@@ -262,7 +247,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h3 style={{ fontSize: '1.25rem' }}>¿Quién entregó el pedido?</h3>
-                <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)' }}>
+                <button onClick={() => setShowModal(false)} className="btn-icon">
                   <X size={24} />
                 </button>
               </div>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Check, Search, RotateCcw } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../api/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '../lib/ToastContext';
-import { useProducts } from '../lib/useProducts';
-import { useClients } from '../lib/useClients';
-import ClientAutocomplete from './ClientAutocomplete';
+import { useToast } from '../../context/ToastContext';
+import { useProducts } from '../../hooks/useProducts';
+import { useClients } from '../clients/useClients';
+import ClientAutocomplete from '../clients/ClientAutocomplete';
+import Card from '../../components/common/Card';
+import Button from '../../components/common/Button';
 
 export default function ReturnForm({ onReturnCreated }) {
   const toast = useToast();
@@ -40,7 +42,6 @@ export default function ReturnForm({ onReturnCreated }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Asegurar que el cliente existe
       await addClient(clientName);
 
       const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => ({ boxType, quantity }));
@@ -93,21 +94,21 @@ export default function ReturnForm({ onReturnCreated }) {
         onChange={(e) => setNotes(e.target.value)}
       />
 
-      <button
-        className={`btn-nav ${clientName ? 'active' : ''}`}
+      <Button
+        active={!!clientName}
         disabled={!clientName}
         onClick={() => setStep(2)}
-        style={{ marginTop: 'auto' }}
+        style={{ marginTop: 'auto', background: '#f59e0b' }}
       >
         Siguiente
-      </button>
+      </Button>
     </motion.div>
   );
 
   const renderStep2 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(1)} style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Cajas Devueltas</h2>
@@ -184,27 +185,28 @@ export default function ReturnForm({ onReturnCreated }) {
         Total a devolver: <span style={{ color: '#f59e0b', fontWeight: 600 }}>{totalCajas} cajas</span>
       </div>
 
-      <button
-        className={`btn-nav ${totalCajas > 0 ? 'active' : ''}`}
+      <Button
+        active={totalCajas > 0}
         disabled={totalCajas === 0}
         onClick={() => setStep(3)}
+        style={{ background: '#f59e0b' }}
       >
         Siguiente
-      </button>
+      </Button>
     </motion.div>
   );
 
   const renderStep3 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(2)} style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Confirmar Devolución</h2>
       </div>
       <p className="step-subtitle" style={{ marginLeft: '40px' }}>Paso 3 de 3</p>
 
-      <div className="card-glass" style={{ borderLeft: '3px solid #f59e0b' }}>
+      <Card style={{ borderLeft: '3px solid #f59e0b' }}>
         <div style={{ marginBottom: '16px' }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '4px' }}>Devuelto por</p>
           <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>{clientName}</p>
@@ -231,20 +233,17 @@ export default function ReturnForm({ onReturnCreated }) {
           <span style={{ fontWeight: 600 }}>Total devuelto</span>
           <span style={{ color: '#f59e0b', fontWeight: 700 }}>{totalCajas} cajas</span>
         </div>
-      </div>
+      </Card>
 
-      <button
-        className="btn-submit"
+      <Button
+        variant="warning"
         onClick={handleSubmit}
-        disabled={loading}
+        loading={loading}
+        icon={RotateCcw}
         style={{ background: '#f59e0b', marginTop: '12px' }}
       >
-        {loading ? 'Registrando...' : (
-          <>
-            <RotateCcw size={20} /> Registrar Devolución
-          </>
-        )}
-      </button>
+        Registrar Devolución
+      </Button>
     </motion.div>
   );
 

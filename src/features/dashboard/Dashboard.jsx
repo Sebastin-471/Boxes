@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Package, TrendingUp, TrendingDown, Calendar, ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { Package, TrendingUp, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
   startOfDay, endOfDay,
@@ -7,6 +7,7 @@ import {
   startOfMonth, endOfMonth,
   isWithinInterval
 } from 'date-fns';
+import Card from '../../components/common/Card';
 
 export default function Dashboard({ orders, returns }) {
   const stats = useMemo(() => {
@@ -80,25 +81,16 @@ export default function Dashboard({ orders, returns }) {
 
   return (
     <div style={{ marginBottom: '24px' }}>
-      <h3 style={{
-        fontSize: '0.75rem',
-        color: 'var(--text-tertiary)',
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        marginBottom: '16px',
-        fontWeight: 600
-      }}>
+      <h3 className="section-title">
         Resumen de Entregas
       </h3>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {cards.map((card, idx) => (
-          <motion.div
+          <Card
             key={card.title}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className="card-glass dashboard-card"
+            idx={idx}
+            className="dashboard-card"
             style={{ background: card.gradient, borderColor: `${card.accentColor}22` }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -146,7 +138,7 @@ export default function Dashboard({ orders, returns }) {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </Card>
         ))}
       </div>
     </div>

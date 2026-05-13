@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Check, Plus, Minus, Search } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../api/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '../lib/ToastContext';
-import { useProducts } from '../lib/useProducts';
-import { useClients } from '../lib/useClients';
-import ClientAutocomplete from './ClientAutocomplete';
+import { useToast } from '../../context/ToastContext';
+import { useProducts } from '../../hooks/useProducts';
+import { useClients } from '../clients/useClients';
+import ClientAutocomplete from '../clients/ClientAutocomplete';
+import Card from '../../components/common/Card';
+import Button from '../../components/common/Button';
 
 export default function OrderForm({ onOrderCreated, initialData = null }) {
   const toast = useToast();
@@ -49,7 +51,6 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // 1. Asegurar que el cliente existe en la tabla de clientes
       await addClient(clientName);
 
       const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => ({ boxType, quantity }));
@@ -116,21 +117,21 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
         onChange={(e) => setNotes(e.target.value)}
       />
 
-      <button 
-        className={`btn-nav ${clientName ? 'active' : ''}`}
+      <Button 
+        active={!!clientName}
         disabled={!clientName}
         onClick={() => setStep(2)}
         style={{ marginTop: 'auto' }}
       >
         Siguiente
-      </button>
+      </Button>
     </motion.div>
   );
 
   const renderStep2 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(1)} style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Seleccionar Cajas</h2>
@@ -209,27 +210,27 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
         Total: <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{totalCajas} cajas</span>
       </div>
 
-      <button 
-        className={`btn-nav ${totalCajas > 0 ? 'active' : ''}`}
+      <Button 
+        active={totalCajas > 0}
         disabled={totalCajas === 0}
         onClick={() => setStep(3)}
       >
         Siguiente
-      </button>
+      </Button>
     </motion.div>
   );
 
   const renderStep3 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(2)} style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Confirmar</h2>
       </div>
       <p className="step-subtitle" style={{ marginLeft: '40px' }}>Paso 3 de 3</p>
 
-      <div className="card-glass">
+      <Card>
         <div style={{ marginBottom: '16px' }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '4px' }}>Cliente</p>
           <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>{clientName}</p>
@@ -249,15 +250,11 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
           <span style={{ fontWeight: 600 }}>Total</span>
           <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{totalCajas} cajas</span>
         </div>
-      </div>
+      </Card>
 
-      <button className="btn-submit" onClick={handleSubmit} disabled={loading} style={{ background: 'var(--accent-primary)' }}>
-        {loading ? 'Guardando...' : (
-          <>
-            <Check size={20} /> {initialData ? 'Guardar Cambios' : 'Crear Pedido'}
-          </>
-        )}
-      </button>
+      <Button variant="primary" onClick={handleSubmit} loading={loading} icon={Check}>
+        {initialData ? 'Guardar Cambios' : 'Crear Pedido'}
+      </Button>
     </motion.div>
   );
 

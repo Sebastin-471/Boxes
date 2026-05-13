@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from './supabase';
-import { BOX_MAPPING } from './boxMapping';
+import { supabase } from '../api/client';
+import { BOX_MAPPING } from '../utils/boxMapping';
 
 // In-memory cache for products
 let cachedProducts = null;

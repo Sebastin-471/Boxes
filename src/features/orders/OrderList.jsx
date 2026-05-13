@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Package, Truck, ChevronRight, Box, Search } from 'lucide-react';
+import { Package, Truck, Search, Box } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getBoxLabel } from '../lib/boxMapping';
+import Card from '../../components/common/Card';
+import Badge from '../../components/common/Badge';
 
 const STATUS_FILTERS = ['Todos', 'Pendiente', 'Preparando', 'Listos'];
 
@@ -35,23 +36,15 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
     const statusInfo = STATUS_DISPLAY[order.status] || STATUS_DISPLAY['CREATED'];
     
     return (
-      <motion.div 
+      <Card 
         key={order.id}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: idx * 0.05 }}
-        className="card-glass" 
+        idx={idx}
         onClick={() => onOrderClick(order)}
-        style={{ cursor: 'pointer', marginBottom: '0' }}
+        style={{ marginBottom: '0' }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{order.client_name}</h3>
-          <span className="badge-status" style={{ 
-            background: `${statusInfo.color}22`, 
-            color: statusInfo.color 
-          }}>
-            {statusInfo.label}
-          </span>
+          <Badge color={statusInfo.color}>{statusInfo.label}</Badge>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -69,7 +62,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
             <span>{totalItems} cajas</span>
           </div>
         </div>
-      </motion.div>
+      </Card>
     );
   };
 
@@ -99,7 +92,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
 
     return groups.map((group) => (
       <div key={group.dateStr} style={{ marginBottom: '20px' }}>
-        <h4 style={{ fontSize: '0.85rem', color: 'var(--accent-primary)', marginBottom: '12px', paddingBottom: '4px', borderBottom: '1px solid var(--surface-border)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+        <h4 className="section-divider">
           {group.dateStr}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -112,7 +105,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
   if (loading) {
     return (
       <div className="view-container">
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 600, marginBottom: '24px' }}>{title}</h2>
+        <h2 className="view-title">{title}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[1, 2, 3].map(i => (
             <div key={i} className="card-glass skeleton" style={{ height: '120px' }} />
@@ -125,8 +118,20 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
   return (
     <div className="view-container">
       <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 600, marginBottom: '16px' }}>{title}</h2>
+        <h2 className="view-title" style={{ marginBottom: '16px' }}>{title}</h2>
         
+        {/* Search Bar */}
+        <div className="search-container" style={{ position: 'relative', marginBottom: '16px' }}>
+          <Search size={18} className="search-icon" style={{ position: 'absolute', left: '16px', top: '16px', color: 'var(--text-tertiary)' }} />
+          <input 
+            className="custom-input" 
+            placeholder="Buscar cliente..." 
+            style={{ paddingLeft: '48px', marginBottom: 0 }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
         {title === 'Pedidos Activos' && (
           <div className="chip-container">
             {STATUS_FILTERS.map(filter => (

@@ -3,7 +3,9 @@ import { RotateCcw, Package, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useProducts } from '../lib/useProducts';
+import { useProducts } from '../../hooks/useProducts';
+import Card from '../../components/common/Card';
+import Badge from '../../components/common/Badge';
 
 export default function ReturnList({ returns, loading }) {
   const { getProductLabel } = useProducts();
@@ -34,16 +36,7 @@ export default function ReturnList({ returns, loading }) {
 
     return groups.map((group) => (
       <div key={group.dateStr} style={{ marginBottom: '20px' }}>
-        <h4 style={{
-          fontSize: '0.85rem',
-          color: '#f59e0b',
-          marginBottom: '12px',
-          paddingBottom: '4px',
-          borderBottom: '1px solid var(--surface-border)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          fontWeight: 600
-        }}>
+        <h4 className="section-divider" style={{ color: '#f59e0b' }}>
           {group.dateStr}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -57,22 +50,14 @@ export default function ReturnList({ returns, loading }) {
     const totalItems = (ret.items || []).reduce((acc, item) => acc + item.quantity, 0);
 
     return (
-      <motion.div
+      <Card
         key={ret.id}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: idx * 0.05 }}
-        className="card-glass"
+        idx={idx}
         style={{ borderLeft: '3px solid #f59e0b', marginBottom: '0' }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{ret.client_name}</h3>
-          <span className="badge-status" style={{
-            background: 'rgba(245, 158, 11, 0.12)',
-            color: '#f59e0b'
-          }}>
-            Devolución
-          </span>
+          <Badge color="#f59e0b">Devolución</Badge>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
@@ -100,14 +85,14 @@ export default function ReturnList({ returns, loading }) {
             {ret.notes}
           </div>
         )}
-      </motion.div>
+      </Card>
     );
   };
 
   if (loading) {
     return (
       <div className="view-container">
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 600, marginBottom: '24px' }}>Devoluciones</h2>
+        <h2 className="view-title">Devoluciones</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[1, 2, 3].map(i => (
             <div key={i} className="card-glass skeleton" style={{ height: '120px' }} />
@@ -119,7 +104,7 @@ export default function ReturnList({ returns, loading }) {
 
   return (
     <div className="view-container">
-      <h2 style={{ fontSize: '1.75rem', fontWeight: 600, marginBottom: '24px' }}>Devoluciones</h2>
+      <h2 className="view-title">Devoluciones</h2>
 
       <AnimatePresence mode="wait">
         {returns.length > 0 ? (
