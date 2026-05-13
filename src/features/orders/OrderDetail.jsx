@@ -48,9 +48,13 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
       if (error) throw error;
       toast.success(`Pedido: ${newStatus === 'DELIVERED' ? 'Entregado' : STATUS_MAP[newStatus].label}`);
       setShowModal(false);
-      onStatusUpdate();
+      
+      // Pass optimistic data so the UI updates immediately
+      onStatusUpdate({ ...order, ...updateData });
     } catch (error) {
       toast.error('Error al actualizar: ' + error.message);
+      // Refetch to revert any optimistic state
+      onStatusUpdate();
     } finally {
       setLoading(false);
     }
@@ -111,7 +115,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
           variant="secondary"
           onClick={() => onEdit(order)}
           icon={Edit3}
-          style={{ padding: '8px 16px', fontSize: '0.9rem' }}
+          style={{ padding: '8px 16px', fontSize: '0.9rem', width: 'fit-content' }}
         >
           Editar
         </Button>

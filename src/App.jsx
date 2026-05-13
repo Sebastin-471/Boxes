@@ -30,7 +30,7 @@ function AppContent() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  const { orders, loading: ordersLoading, refetch: refetchOrders } = useOrders();
+  const { orders, setOrders, loading: ordersLoading, refetch: refetchOrders } = useOrders();
   const { returns, loading: returnsLoading, refetch: refetchReturns } = useReturns();
   const toast = useToast();
 
@@ -52,6 +52,19 @@ function AppContent() {
       window.removeEventListener('offline', handleOffline);
     };
   }, [toast]);
+
+  // Sync selectedOrder with latest data from orders array
+  useEffect(() => {
+    if (selectedOrder) {
+      const updated = orders.find(o => o.id === selectedOrder.id);
+      if (updated) {
+        setSelectedOrder(updated);
+      } else if (!ordersLoading && orders.length > 0) {
+        // Order was deleted
+        setSelectedOrder(null);
+      }
+    }
+  }, [orders]);
 
   const handleNavigate = (tabId) => {
     setActiveTab(tabId);
@@ -75,7 +88,16 @@ function AppContent() {
         <OrderDetail 
           order={selectedOrder} 
           onBack={() => setSelectedOrder(null)} 
-          onStatusUpdate={refetchOrders}
+          onStatusUpdate={(optimisticOrder) => {
+            if (optimisticOrder) {
+              // Immediately show the updated order
+              setSelectedOrder(optimisticOrder);
+              // Also update the orders array so other views stay in sync
+              setOrders(prev => prev.map(o => o.id === optimisticOrder.id ? optimisticOrder : o));
+            }
+            // Always refetch from server to ensure consistency
+            refetchOrders();
+          }}
           onEdit={(order) => {
             setEditingOrder(order);
             setSelectedOrder(null);

@@ -51,6 +51,7 @@ export function useOrders() {
 
   return { 
     orders, 
+    setOrders,
     loading, 
     refetch: fetchOrders,
     updateOrderStatus,

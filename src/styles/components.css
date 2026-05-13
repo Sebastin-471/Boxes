@@ -57,7 +57,6 @@
 .btn-submit {
   background: var(--accent-success);
   color: white;
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
 }
 
 /* Forms */

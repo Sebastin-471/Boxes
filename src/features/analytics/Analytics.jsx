@@ -165,7 +165,7 @@ export default function Analytics({ orders, returns }) {
           variant="secondary"
           onClick={handleExport}
           icon={Download}
-          style={{ padding: '10px' }}
+          style={{ padding: '10px', width: 'fit-content' }}
           title="Exportar a CSV"
         />
       </div>

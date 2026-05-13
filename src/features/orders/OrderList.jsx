@@ -111,7 +111,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
         
         {/* Search Bar */}
         <div className="search-container" style={{ position: 'relative', marginBottom: '16px' }}>
-          <Search size={18} className="search-icon" style={{ position: 'absolute', left: '16px', top: '16px', color: 'var(--text-tertiary)' }} />
+          <Search size={18} className="search-icon" style={{ position: 'absolute', left: '16px', color: 'var(--text-tertiary)' }} />
           <input 
             className="custom-input" 
             placeholder="Buscar cliente..." 
