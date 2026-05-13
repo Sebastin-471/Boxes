@@ -9,10 +9,11 @@ import {
 } from 'date-fns';
 import Card from '../../components/common/Card';
 
-export default function Dashboard({ orders, returns }) {
+export default function Dashboard({ orders, returns, onTabNavigate }) {
   const stats = useMemo(() => {
+    // ... same logic
     const now = new Date();
-
+    // ...
     const todayInterval = { start: startOfDay(now), end: endOfDay(now) };
     const weekInterval = { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
     const monthInterval = { start: startOfMonth(now), end: endOfMonth(now) };
@@ -58,6 +59,7 @@ export default function Dashboard({ orders, returns }) {
   const cards = [
     {
       title: 'Hoy',
+      id: 'dashboard',
       icon: Calendar,
       ...stats.today,
       gradient: 'linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(139,92,246,0.05) 100%)',
@@ -65,6 +67,7 @@ export default function Dashboard({ orders, returns }) {
     },
     {
       title: 'Esta Semana',
+      id: 'dashboard',
       icon: TrendingUp,
       ...stats.week,
       gradient: 'linear-gradient(135deg, rgba(96,165,250,0.15) 0%, rgba(96,165,250,0.05) 100%)',
@@ -72,6 +75,7 @@ export default function Dashboard({ orders, returns }) {
     },
     {
       title: 'Este Mes',
+      id: 'history',
       icon: Package,
       ...stats.month,
       gradient: 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 100%)',
@@ -90,8 +94,13 @@ export default function Dashboard({ orders, returns }) {
           <Card
             key={card.title}
             idx={idx}
+            onClick={() => onTabNavigate?.(card.id)}
             className="dashboard-card"
-            style={{ background: card.gradient, borderColor: `${card.accentColor}22` }}
+            style={{ 
+              background: card.gradient, 
+              borderColor: `${card.accentColor}22`,
+              cursor: 'pointer' 
+            }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>

@@ -67,36 +67,25 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
   };
 
   const renderHistoryGroups = () => {
-    const groups = [];
-    let currentDateStr = null;
-    let currentGroup = [];
-
+    const groupsMap = {};
+    
     filteredOrders.forEach(order => {
       const dateObj = new Date(order.delivery_date || order.created_at);
       const dateStr = format(dateObj, "d 'de' MMMM", { locale: es });
       
-      if (dateStr !== currentDateStr) {
-        if (currentGroup.length > 0) {
-          groups.push({ dateStr: currentDateStr, orders: currentGroup });
-        }
-        currentDateStr = dateStr;
-        currentGroup = [order];
-      } else {
-        currentGroup.push(order);
+      if (!groupsMap[dateStr]) {
+        groupsMap[dateStr] = [];
       }
+      groupsMap[dateStr].push(order);
     });
 
-    if (currentGroup.length > 0) {
-      groups.push({ dateStr: currentDateStr, orders: currentGroup });
-    }
-
-    return groups.map((group) => (
-      <div key={group.dateStr} style={{ marginBottom: '20px' }}>
+    return Object.entries(groupsMap).map(([dateStr, orders]) => (
+      <div key={dateStr} style={{ marginBottom: '20px' }}>
         <h4 className="section-divider">
-          {group.dateStr}
+          {dateStr}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {group.orders.map((order, idx) => renderOrderCard(order, idx))}
+          {orders.map((order, idx) => renderOrderCard(order, idx))}
         </div>
       </div>
     ));

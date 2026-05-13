@@ -37,8 +37,8 @@ body {
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  marginBottom: 16px;
-  fontWeight: 600;
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
 .section-subtitle {

@@ -7,6 +7,7 @@ export default function Button({
   loading = false, 
   disabled = false, 
   icon: Icon,
+  active,
   ...props 
 }) {
   const getVariantStyle = () => {

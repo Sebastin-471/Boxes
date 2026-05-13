@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Package, PlusCircle, RotateCcw } from 'lucide-react';
+import { haptics } from '../../utils/haptics';
 
 export default function BottomNav({ activeTab, onTabChange }) {
   const tabs = [
@@ -14,7 +15,10 @@ export default function BottomNav({ activeTab, onTabChange }) {
       {tabs.map(tab => (
         <button 
           key={tab.id}
-          onClick={() => onTabChange(tab.id)}
+          onClick={() => {
+            haptics.impact('light');
+            onTabChange(tab.id);
+          }}
           className={`nav-btn ${activeTab === tab.id ? 'active' : ''}`}
         >
           <tab.icon 

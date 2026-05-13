@@ -28,9 +28,30 @@ function AppContent() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   const { orders, loading: ordersLoading, refetch: refetchOrders } = useOrders();
   const { returns, loading: returnsLoading, refetch: refetchReturns } = useReturns();
+  const toast = useToast();
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      toast.info('Conexión restaurada');
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast.error('Sin conexión a internet');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [toast]);
 
   const handleNavigate = (tabId) => {
     setActiveTab(tabId);
@@ -77,19 +98,19 @@ function AppContent() {
 
     switch (activeTab) {
       case 'resumen':
-        return <Resumen orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
+        return <Resumen key="resumen" orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} onTabNavigate={handleNavigate} />;
       case 'dashboard':
-        return <Pedidos orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
+        return <Pedidos key="pedidos" orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} refetch={refetchOrders} />;
       case 'new':
-        return <Crear onOrderCreated={handleOrderCreated} />;
+        return <Crear key="crear" onOrderCreated={handleOrderCreated} />;
       case 'returns':
-        return <Devolver onReturnCreated={handleReturnCreated} />;
+        return <Devolver key="devolver" onReturnCreated={handleReturnCreated} />;
       case 'analytics':
-        return <Analisis orders={orders} returns={returns} />;
+        return <Analisis key="analytics" orders={orders} returns={returns} />;
       case 'history':
-        return <Historial orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
+        return <Historial key="history" orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} refetch={refetchOrders} />;
       default:
-        return <Resumen orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
+        return <Resumen key="resumen-def" orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
     }
   };
 

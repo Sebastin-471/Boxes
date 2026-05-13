@@ -8,6 +8,7 @@ import { useClients } from '../clients/useClients';
 import ClientAutocomplete from '../clients/ClientAutocomplete';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
+import { haptics } from '../../utils/haptics';
 
 export default function OrderForm({ onOrderCreated, initialData = null }) {
   const toast = useToast();
@@ -87,9 +88,11 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
 
       if (error) throw error;
 
+      haptics.success();
       toast.success(initialData ? 'Pedido actualizado' : 'Pedido creado con éxito');
       onOrderCreated();
     } catch (error) {
+      haptics.error();
       toast.error('Error al guardar: ' + error.message);
     } finally {
       setLoading(false);

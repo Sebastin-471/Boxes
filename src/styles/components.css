@@ -104,8 +104,8 @@
   border-radius: 8px;
   width: 80px;
   height: 40px;
-  textAlign: center;
+  text-align: center;
   color: white;
-  fontWeight: 600;
-  fontSize: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
 }

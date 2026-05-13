@@ -8,6 +8,7 @@ import { useClients } from '../clients/useClients';
 import ClientAutocomplete from '../clients/ClientAutocomplete';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
+import { haptics } from '../../utils/haptics';
 
 export default function ReturnForm({ onReturnCreated }) {
   const toast = useToast();
@@ -59,9 +60,11 @@ export default function ReturnForm({ onReturnCreated }) {
 
       if (error) throw error;
 
+      haptics.success();
       toast.success('Devolución registrada con éxito');
       onReturnCreated();
     } catch (error) {
+      haptics.error();
       toast.error('Error al registrar devolución: ' + error.message);
     } finally {
       setLoading(false);
