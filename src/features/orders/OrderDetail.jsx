@@ -102,9 +102,9 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
 
   return (
     <motion.div 
+      className="view-container centered-view"
       initial={{ opacity: 0, x: 20 }} 
       animate={{ opacity: 1, x: 0 }} 
-      className="view-container"
       style={{ position: 'relative' }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>

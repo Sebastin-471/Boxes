@@ -129,7 +129,7 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
 
       <h3 className="section-title">Resumen de Entregas</h3>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
         {cards.map((card, idx) => (
           <Card
             key={card.title}

@@ -260,7 +260,7 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
   );
 
   return (
-    <div className="view-container">
+    <div className="view-container centered-view">
       <AnimatePresence mode="wait">
         {step === 1 && renderStep1()}
         {step === 2 && renderStep2()}

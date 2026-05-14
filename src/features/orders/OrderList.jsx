@@ -84,7 +84,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
         <h4 className="section-divider">
           {dateStr}
         </h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
           {orders.map((order, idx) => renderOrderCard(order, idx))}
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}
           >
             {title === 'Historial' 
               ? renderHistoryGroups() 
