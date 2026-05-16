@@ -1,73 +1,79 @@
-# Guía de Instalación: BoxManager 📦📱
+# Guías de Instalación en Dispositivos Móviles
 
-Esta guía explica paso a paso cómo instalar BoxManager en dispositivos móviles para aprovechar al máximo sus características nativas (funcionamiento offline, notificaciones push, feedback táctil y acceso rápido).
-
----
-
-## 🍎 Instalación en iPhone (iOS)
-
-En iPhone, la aplicación se instala como una **PWA (Progressive Web App)** a través del navegador Safari. Esto crea un icono en tu pantalla de inicio idéntico a una app de la App Store.
-
-> [!IMPORTANT]
-> Debes usar obligatoriamente el navegador **Safari**. Otros navegadores en iOS (como Chrome o Firefox) no permiten añadir PWAs a la pantalla de inicio.
-
-### Pasos:
-1. Abre **Safari** en tu iPhone.
-2. Navega a la URL o dominio donde está alojada la aplicación BoxManager (ej. *https://tu-dominio.com*).
-3. Una vez que la página haya cargado, toca el icono de **Compartir** en la barra inferior (es el cuadrado con una flecha apuntando hacia arriba 📤).
-4. En el menú que se despliega, desliza hacia abajo y busca la opción **"Agregar a inicio"** (o "Add to Home Screen"). Toca esa opción.
-5. Se abrirá una pantalla de confirmación. Puedes dejar el nombre como "Boxes" o "BoxManager".
-6. Toca **"Agregar"** en la esquina superior derecha.
-7. ¡Listo! Ve a tu pantalla de inicio y verás el icono de BoxManager.
-8. **Primer inicio**: Abre la app desde el nuevo icono y haz tap en cualquier lado. Te pedirá permisos para enviar notificaciones; asegúrate de **Aceptar** para recibir alertas en segundo plano.
+Esta guía detalla los pasos para instalar la aplicación BoxManager en dispositivos Android de forma nativa (como archivo APK) y en iPhone (iOS).
 
 ---
 
-## 🤖 Instalación en Android
+## 🤖 Guía de Instalación para Android (Nativa - APK)
 
-Para Android, existen dos métodos de instalación: a través del navegador (PWA) o instalando el archivo nativo (.apk).
+BoxManager utiliza **Capacitor** para empaquetar la aplicación web como una aplicación nativa de Android. Para generar el APK, necesitarás tener instalado Android Studio en tu PC.
 
-### Método 1: Vía Navegador Chrome (Recomendado / Más rápido)
+### Requisitos Previos:
+- [Node.js](https://nodejs.org/) instalado.
+- [Android Studio](https://developer.android.com/studio) instalado.
 
-Este método instala la versión web progresiva directamente en tu teléfono, manteniéndose siempre actualizada automáticamente.
+### Paso a Paso para generar el APK:
 
-1. Abre **Google Chrome** en tu dispositivo Android.
-2. Navega a la URL de BoxManager (ej. *https://tu-dominio.com*).
-3. Es probable que en la parte inferior aparezca un aviso automático que diga **"Añadir BoxManager a la pantalla de inicio"**. Si lo ves, simplemente tócalo.
-4. Si no aparece el aviso:
-   - Toca el menú de los **tres puntos verticales** (⋮) en la esquina superior derecha de Chrome.
-   - Selecciona la opción **"Instalar aplicación"** o **"Añadir a la pantalla de inicio"**.
-5. Confirma tocando **"Instalar"** en la ventana emergente.
-6. ¡Listo! El icono de la aplicación se añadirá a tu cajón de aplicaciones y pantalla de inicio.
+1. **Prepara el proyecto web:**
+   Abre una terminal en la carpeta raíz del proyecto y asegúrate de tener las dependencias al día, luego construye la versión de producción:
+   ```bash
+   npm install
+   npm run build
+   ```
 
-### Método 2: Vía APK Nativo (Para integración más profunda)
+2. **Sincroniza con Capacitor:**
+   Este comando toma los archivos generados en el paso anterior y los inyecta en el proyecto nativo de Android:
+   ```bash
+   npm run sync
+   # (O alternativamente: npx cap sync android)
+   ```
 
-Este método instala el binario generado con Capacitor, el cual ofrece un acceso un poco más profundo al hardware del teléfono (vibración mejorada, control nativo del teclado).
+3. **Abre Android Studio:**
+   Lanza el proyecto directamente en Android Studio mediante la consola:
+   ```bash
+   npm run open:android
+   # (O alternativamente: npx cap open android)
+   ```
 
-> [!WARNING]
-> Necesitas tener habilitada la instalación de aplicaciones de "Orígenes desconocidos" en tu Android para instalar el `.apk` directamente.
+4. **Genera el archivo APK:**
+   - Una vez que Android Studio abra el proyecto y termine de sincronizar Gradle (ver barra de progreso inferior), ve al menú superior.
+   - Haz clic en **Build** > **Build Bundle(s) / APK(s)** > **Build APK(s)**.
+   - Espera a que termine el proceso. Aparecerá una notificación en la parte inferior derecha.
+   - Haz clic en **"locate"** en esa notificación para que se abra la carpeta donde se guardó el archivo `app-debug.apk`.
 
-**Para el desarrollador (Cómo generar el APK):**
-1. En la PC, abre el proyecto y ejecuta `npm run sync`.
-2. Luego ejecuta `npm run open:android` para abrir Android Studio.
-3. En Android Studio, ve al menú superior: `Build` > `Build Bundle(s) / APK(s)` > `Build APK(s)`.
-4. Una vez generado, Android Studio mostrará un mensaje emergente. Haz clic en "Locate" para ver el archivo `app-debug.apk`.
-5. Envía ese archivo al dispositivo Android (por correo, WhatsApp, cable USB, etc.).
-
-**Para el usuario (Cómo instalar el APK):**
-1. Descarga el archivo `BoxManager.apk` en tu dispositivo Android.
-2. Toca el archivo descargado para abrirlo.
-3. Si el teléfono te pide permisos para instalar aplicaciones desde esta fuente (Chrome o Administrador de Archivos), dale a **Configuración** y activa el interruptor de **"Permitir desde esta fuente"**.
-4. Vuelve atrás y toca **"Instalar"**.
-5. Una vez finalizado, toca **"Abrir"**.
-6. Concede el permiso de **Notificaciones** apenas lo solicite la aplicación.
+5. **Instalación en el móvil:**
+   - Copia ese archivo `app-debug.apk` a tu dispositivo Android (vía USB, Google Drive, WhatsApp, etc.).
+   - En tu teléfono Android, abre el archivo. (Es posible que te pida permisos para "Instalar aplicaciones de fuentes desconocidas", debes aceptarlo).
+   - ¡Listo! BoxManager estará instalado como una aplicación nativa.
 
 ---
 
-## 💡 Solución de Problemas Comunes
+## 🍏 Guía de Instalación para iPhone (iOS)
 
-- **No llegan las notificaciones**:
-  - Verifica en los ajustes del teléfono (Ajustes > Aplicaciones > BoxManager > Notificaciones) que los permisos estén habilitados.
-  - Asegúrate de no estar en modo "No molestar" o en un modo estricto de "Ahorro de batería".
-- **La pantalla se ve cortada o no actualiza**:
-  - Tanto en iOS como en Android, si eres el usuario de la PWA, puedes arrastrar la pantalla hacia abajo (Pull-to-refresh) en la pestaña "Dashboard" o "Historial" para forzar la actualización de los pedidos y la interfaz de caché.
+El ecosistema de Apple es cerrado, por lo que existen dos caminos. El **Método 1 es el más rápido y recomendado** si no posees una computadora Mac.
+
+### Método 1: Instalación como PWA (Progresive Web App) - *Recomendado*
+Como la aplicación está desarrollada bajo el estándar PWA, funciona de maravilla instalándose directamente desde el navegador, sin necesidad de compilar código nativo.
+
+1. **Aloja la aplicación:** La aplicación web debe estar hosteada/subida en algún servidor (Vercel, Netlify, Firebase Hosting, etc.).
+2. **Abre Safari:** Desde el iPhone, abre el navegador **Safari** y entra a la URL de tu aplicación.
+3. **Botón Compartir:** Toca el ícono de "Compartir" en la barra inferior de Safari (el cuadrado con la flecha apuntando hacia arriba).
+4. **Añadir a Inicio:** En el menú que se despliega, baja hasta encontrar la opción **"Añadir a la pantalla de inicio"** (Add to Home Screen).
+5. **Confirmar:** Dale un nombre ("BoxManager") y toca en "Añadir".
+6. **¡Listo!** El ícono de la app aparecerá en el menú de aplicaciones de tu iPhone y al abrirla se comportará como una aplicación nativa (pantalla completa, funcionará sin internet en caché, etc).
+
+### Método 2: Instalación Nativa (.ipa) - *Solo si tienes MacOS*
+Al igual que en Android, Capacitor permite exportar para iOS, pero **Apple exige que el proceso de compilación se haga estrictamente desde una computadora Mac usando el software Xcode**.
+
+1. Asegúrate de tener **Xcode** instalado en tu Mac.
+2. Abre la terminal en el proyecto y ejecuta:
+   ```bash
+   npm run build
+   npx cap sync ios
+   npx cap open ios
+   ```
+3. Se abrirá **Xcode**.
+4. Conecta tu iPhone a la Mac por cable USB.
+5. En la parte superior de Xcode, selecciona tu iPhone como el dispositivo de destino (en lugar de un simulador).
+6. Es necesario configurar tu cuenta de desarrollador de Apple en la pestaña **"Signing & Capabilities"**.
+7. Presiona el botón de **Play (Run)** en la esquina superior izquierda. Xcode instalará la app nativa directamente en tu dispositivo conectado.
