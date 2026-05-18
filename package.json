@@ -17,6 +17,7 @@
     "@capacitor/core": "^8.3.1",
     "@capacitor/haptics": "^8.0.2",
     "@capacitor/keyboard": "^8.0.3",
+    "@capacitor/local-notifications": "^8.2.0",
     "@supabase/supabase-js": "^2.104.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",

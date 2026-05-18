@@ -1,7 +1,8 @@
 /**
- * NotificationService — Native OS notifications via Service Worker.
+ * NotificationService — Native OS notifications via Capacitor (Mobile) or Service Worker (Web).
  * Only shows notifications when the app is NOT focused (background/minimized).
  */
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 const APP_ICON = '/pwa-192x192.png';
 
@@ -10,6 +11,17 @@ const APP_ICON = '/pwa-192x192.png';
  * @returns {Promise<'granted'|'denied'|'default'>}
  */
 export async function requestNotificationPermission() {
+  if (window.Capacitor || navigator.userAgent.includes('Capacitor')) {
+    try {
+      const { display } = await LocalNotifications.requestPermissions();
+      return display; // 'granted' or 'denied'
+    } catch (e) {
+      console.warn('Native permission request failed:', e);
+      return 'denied';
+    }
+  }
+
+  // Fallback to Web API
   if (!('Notification' in window)) {
     console.warn('This browser does not support notifications');
     return 'denied';
@@ -28,10 +40,30 @@ export async function requestNotificationPermission() {
 }
 
 /**
- * Show a native OS notification via the Service Worker.
- * Using SW ensures notifications work even when the tab is not focused.
+ * Show a native OS notification via the Capacitor or Service Worker.
+ * Using SW/Native ensures notifications work even when the tab is not focused.
  */
 export async function showNotification(title, body, options = {}) {
+  if (window.Capacitor || navigator.userAgent.includes('Capacitor')) {
+    try {
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: title,
+            body: body,
+            id: Math.floor(Math.random() * 100000), // Random ID
+            schedule: { at: new Date(Date.now() + 100) }, // Schedule immediately
+            extra: options.data || {},
+          }
+        ]
+      });
+      return;
+    } catch (e) {
+      console.warn('Native notification failed:', e);
+    }
+  }
+
+  // Fallback to Web API
   if (Notification.permission !== 'granted') return;
 
   try {
@@ -52,7 +84,7 @@ export async function showNotification(title, body, options = {}) {
       });
     }
   } catch (error) {
-    console.warn('Failed to show notification:', error);
+    console.warn('Failed to show web notification:', error);
   }
 }
 
@@ -69,7 +101,15 @@ export function notifyIfBackground(title, body, options = {}) {
 /**
  * Check if notifications are supported and permitted.
  */
-export function isNotificationEnabled() {
+export async function isNotificationEnabled() {
+  if (window.Capacitor || navigator.userAgent.includes('Capacitor')) {
+    try {
+      const { display } = await LocalNotifications.checkPermissions();
+      return display === 'granted';
+    } catch (e) {
+      return false;
+    }
+  }
   return 'Notification' in window && Notification.permission === 'granted';
 }
 
