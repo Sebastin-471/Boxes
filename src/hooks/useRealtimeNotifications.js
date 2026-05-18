@@ -47,22 +47,27 @@ export function useRealtimeNotifications() {
             const newStatus = newRecord?.status;
 
             if (oldStatus && newStatus && oldStatus !== newStatus) {
-              const statusLabel = STATUS_LABELS[newStatus] || newStatus;
-              notifyIfBackground(
-                `🔄 Pedido actualizado`,
-                `${newRecord.client_name} → ${statusLabel}`,
-                { tag: `order-${newRecord.id}` }
-              );
+              if (newStatus === 'READY') {
+                notifyIfBackground(
+                  `✅ Pedido Listo`,
+                  `El pedido de ${newRecord.client_name} está listo para entregar.`,
+                  { tag: `order-${newRecord.id}` }
+                );
+              } else if (newStatus === 'DELIVERED') {
+                const deliverer = newRecord.delivered_by || 'un repartidor';
+                notifyIfBackground(
+                  `🚚 Pedido Entregado`,
+                  `Entregado a ${newRecord.client_name} por ${deliverer}.`,
+                  { tag: `order-${newRecord.id}` }
+                );
+              }
+              // Other statuses (PREPARING, CANCELLED) are intentionally ignored
             }
             break;
           }
 
           case 'DELETE': {
-            notifyIfBackground(
-              '🗑️ Pedido eliminado',
-              `Se eliminó un pedido${oldRecord?.client_name ? ` de ${oldRecord.client_name}` : ''}`,
-              { tag: `order-del-${oldRecord?.id || Date.now()}` }
-            );
+            // Intentionally ignoring physical DELETEs to reduce notification noise
             break;
           }
         }
