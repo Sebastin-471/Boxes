@@ -63,7 +63,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`¿Estás seguro de que deseas eliminar el pedido de "${order.client_name}"? Esta acción no se puede deshacer.`)) {
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar (desactivar) el pedido de "${order.client_name}"?`)) {
       return;
     }
 
@@ -71,7 +71,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
     try {
       const { error } = await supabase
         .from('orders')
-        .delete()
+        .update({ status: 'CANCELLED' })
         .eq('id', order.id);
 
       if (error) throw error;
@@ -114,14 +114,16 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
           </button>
           <h2 className="step-title" style={{ marginBottom: 0 }}>Detalles</h2>
         </div>
-        <Button 
-          variant="secondary"
-          onClick={() => onEdit(order)}
-          icon={Edit3}
-          style={{ padding: '8px 16px', fontSize: '0.9rem', width: 'fit-content' }}
-        >
-          Editar
-        </Button>
+        {order.status !== 'DELIVERED' && (
+          <Button 
+            variant="secondary"
+            onClick={() => onEdit(order)}
+            icon={Edit3}
+            style={{ padding: '8px 16px', fontSize: '0.9rem', width: 'fit-content' }}
+          >
+            Editar
+          </Button>
+        )}
       </div>
 
       <Card style={{ position: 'relative' }}>
@@ -213,16 +215,18 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         </Button>
       )}
 
-      <Button
-        variant="danger"
-        ghost
-        onClick={handleDelete}
-        disabled={loading}
-        icon={Trash2}
-        style={{ marginTop: '12px', background: 'none', border: '1px solid rgba(239, 68, 68, 0.3)' }}
-      >
-        Eliminar Registro
-      </Button>
+      {order.status !== 'DELIVERED' && (
+        <Button
+          variant="danger"
+          ghost
+          onClick={handleDelete}
+          disabled={loading}
+          icon={Trash2}
+          style={{ marginTop: '12px', background: 'none', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+        >
+          Eliminar Registro
+        </Button>
+      )}
 
       {/* Delivery Selection Modal */}
       <AnimatePresence>

@@ -8,6 +8,7 @@ const STATUS_LABELS = {
   'PREPARING': 'En preparación',
   'READY': 'Listo para entregar',
   'DELIVERED': 'Entregado',
+  'CANCELLED': 'Desactivado',
 };
 
 /**

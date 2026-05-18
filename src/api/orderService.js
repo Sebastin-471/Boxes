@@ -5,6 +5,7 @@ export const orderService = {
     const { data, error } = await supabase
       .from('orders')
       .select('*')
+      .neq('status', 'CANCELLED')
       .order('created_at', { ascending: false });
     if (error) throw error;
     return data;
@@ -42,7 +43,7 @@ export const orderService = {
   async delete(id) {
     const { error } = await supabase
       .from('orders')
-      .delete()
+      .update({ status: 'CANCELLED' })
       .eq('id', id);
     if (error) throw error;
     return true;
