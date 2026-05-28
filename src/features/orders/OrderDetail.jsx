@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Truck, Calendar, CheckCircle2, User, X, Play, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronLeft, Truck, Calendar, CheckCircle2, User, X, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,10 +14,9 @@ import { markOwnAction } from '../../utils/notificationService';
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
 
 const STATUS_MAP = {
-  'CREATED': { label: 'PENDIENTE', order: 1, next: 'PREPARING', nextLabel: 'Empezar Preparación', nextIcon: Play, color: '#a78bfa', prev: null },
-  'PREPARING': { label: 'EN CURSO', order: 2, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: '#f59e0b', prev: 'CREATED' },
-  'READY': { label: 'LISTO', order: 3, next: 'DELIVERED', nextLabel: 'Marcar como Entregado', nextIcon: CheckCircle2, color: '#60a5fa', prev: 'PREPARING' },
-  'DELIVERED': { label: 'ENTREGADO', order: 4, next: null, color: 'var(--accent-success)', prev: 'READY' }
+  'CREATED': { label: 'PENDIENTE', order: 1, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: '#a78bfa', prev: null },
+  'READY': { label: 'LISTO', order: 2, next: 'DELIVERED', nextLabel: 'Marcar como Entregado', nextIcon: CheckCircle2, color: '#60a5fa', prev: 'CREATED' },
+  'DELIVERED': { label: 'ENTREGADO', order: 3, next: null, color: 'var(--accent-success)', prev: 'READY' }
 };
 
 export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
@@ -90,10 +89,10 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
     const currentOrder = currentStatusInfo.order;
     return (
       <div className="progress-container" style={{ justifyContent: 'space-between', padding: '0 10px' }}>
-        {[1, 2, 3, 4].map((step, i) => (
+        {[1, 2, 3].map((step, i) => (
           <React.Fragment key={step}>
             <div className={`progress-dot ${currentOrder >= step ? 'active' : ''}`} />
-            {i < 3 && <div className={`progress-line ${currentOrder > step ? 'active' : ''}`} style={{ flex: 1 }} />}
+            {i < 2 && <div className={`progress-line ${currentOrder > step ? 'active' : ''}`} style={{ flex: 1 }} />}
           </React.Fragment>
         ))}
       </div>

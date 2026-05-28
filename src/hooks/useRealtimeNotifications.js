@@ -5,7 +5,6 @@ import { getBoxLabel } from '../utils/boxMapping';
 
 const STATUS_LABELS = {
   'CREATED': 'Pendiente',
-  'PREPARING': 'En preparación',
   'READY': 'Listo para entregar',
   'DELIVERED': 'Entregado',
   'CANCELLED': 'Desactivado',
@@ -61,7 +60,7 @@ export function useRealtimeNotifications() {
                   { tag: `order-${newRecord.id}` }
                 );
               }
-              // Other statuses (PREPARING, CANCELLED) are intentionally ignored
+              // Other statuses (CANCELLED) are intentionally ignored
             }
             break;
           }

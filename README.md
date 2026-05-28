@@ -41,8 +41,6 @@ Sistema de gestión de pedidos y logística optimizado para dispositivos móvile
 - Node.js (v18+)
 - Cuenta de Supabase
 
-> 📖 **¿Quieres instalar la app en tu teléfono?** Revisa la [Guía de Instalación para iOS y Android](./guias_instalacion.md).
-
 ### Instalación y Configuración
 1. Clona el repositorio.
 2. Instala dependencias: `npm install`

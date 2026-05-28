@@ -6,11 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../../components/common/Card';
 import Badge from '../../components/common/Badge';
 
-const STATUS_FILTERS = ['Todos', 'Pendiente', 'Preparando', 'Listos'];
+const STATUS_FILTERS = ['Todos', 'Pendiente', 'Listos'];
 
 const STATUS_DISPLAY = {
   'CREATED': { label: 'Pendiente', color: '#a78bfa' },
-  'PREPARING': { label: 'En curso', color: '#f59e0b' },
   'READY': { label: 'Listo', color: '#60a5fa' },
   'DELIVERED': { label: 'Entregado', color: 'var(--accent-success)' }
 };
@@ -23,7 +22,6 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
     const matchesFilter = 
       activeFilter === 'Todos' ||
       (activeFilter === 'Pendiente' && order.status === 'CREATED') ||
-      (activeFilter === 'Preparando' && order.status === 'PREPARING') ||
       (activeFilter === 'Listos' && order.status === 'READY');
     
     const matchesSearch = order.client_name.toLowerCase().includes(searchQuery.toLowerCase());
