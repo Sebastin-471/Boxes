@@ -53,7 +53,8 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
       // Pass optimistic data so the UI updates immediately
       onStatusUpdate({ ...order, ...updateData });
     } catch (error) {
-      toast.error('Error al actualizar: ' + error.message);
+      console.error('Error updating order:', error);
+      toast.error('Error al actualizar el pedido.');
       // Refetch to revert any optimistic state
       onStatusUpdate();
     } finally {
@@ -79,7 +80,8 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
       onBack();
       onStatusUpdate();
     } catch (error) {
-      toast.error('Error al eliminar: ' + error.message);
+      console.error('Error deleting order:', error);
+      toast.error('Error al eliminar el pedido.');
     } finally {
       setLoading(false);
     }

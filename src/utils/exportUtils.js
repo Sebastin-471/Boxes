@@ -1,5 +1,15 @@
 import { format } from 'date-fns';
 
+function sanitizeCSVCell(value) {
+  if (value === null || value === undefined) return '';
+  const stringVal = String(value);
+  // Escaping CSV formulas by prefixing with an apostrophe if it starts with characters: = + - @ \t \r
+  if (/^[=+\-@\t\r]/.test(stringVal)) {
+    return "'" + stringVal;
+  }
+  return stringVal;
+}
+
 export function exportToCSV(data, filename = 'reporte-cajas.csv') {
   if (!data || !data.length) return;
 
@@ -14,16 +24,22 @@ export function exportToCSV(data, filename = 'reporte-cajas.csv') {
         .map(i => `${i.boxType}:${i.quantity}`)
         .join('; ');
       
+      const escapedClientName = sanitizeCSVCell(item.client_name).replace(/"/g, '""');
+      const escapedDetailCajas = sanitizeCSVCell(detailCajas).replace(/"/g, '""');
+      const escapedNotes = sanitizeCSVCell(item.notes || '').replace(/"/g, '""');
+      const escapedDeliveredBy = sanitizeCSVCell(item.delivered_by || '').replace(/"/g, '""');
+      const escapedStatus = sanitizeCSVCell(item.status || '').replace(/"/g, '""');
+
       const row = [
         item.id,
-        `"${item.client_name.replace(/"/g, '""')}"`,
-        item.status,
+        `"${escapedClientName}"`,
+        `"${escapedStatus}"`,
         item.created_at ? format(new Date(item.created_at), 'yyyy-MM-dd HH:mm') : '',
         item.delivery_date ? format(new Date(item.delivery_date), 'yyyy-MM-dd HH:mm') : '',
-        item.delivered_by || '',
+        `"${escapedDeliveredBy}"`,
         totalCajas,
-        `"${detailCajas.replace(/"/g, '""')}"`,
-        `"${(item.notes || '').replace(/"/g, '""')}"`
+        `"${escapedDetailCajas}"`,
+        `"${escapedNotes}"`
       ];
       
       return row.join(',');

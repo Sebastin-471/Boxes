@@ -10,8 +10,10 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { haptics } from '../../utils/haptics';
 import { markOwnAction } from '../../utils/notificationService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ReturnForm({ onReturnCreated }) {
+  const { userName } = useAuth();
   const toast = useToast();
   const { products, loading: productsLoading } = useProducts();
   const { addClient } = useClients();
@@ -44,15 +46,52 @@ export default function ReturnForm({ onReturnCreated }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await addClient(clientName);
+      // 1. Data Validation
+      const trimmedClientName = clientName ? clientName.trim() : '';
+      if (!trimmedClientName) {
+        throw new Error('El nombre del cliente es obligatorio.');
+      }
+      if (trimmedClientName.length < 2 || trimmedClientName.length > 100) {
+        throw new Error('El nombre del cliente debe tener entre 2 y 100 caracteres.');
+      }
+      const nameRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-.,#]+$/;
+      if (!nameRegex.test(trimmedClientName)) {
+        throw new Error('El nombre del cliente contiene caracteres no permitidos.');
+      }
 
-      const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => ({ boxType, quantity }));
+      if (notes && notes.length > 500) {
+        throw new Error('Las notas no pueden superar los 500 caracteres.');
+      }
+
+      const itemsArray = Object.entries(selectedItems).map(([boxType, quantity]) => {
+        const parsedQty = Math.floor(Number(quantity));
+        return { boxType, quantity: parsedQty };
+      });
+
+      if (itemsArray.length === 0) {
+        throw new Error('Debe seleccionar al menos un tipo de caja.');
+      }
+
+      for (const item of itemsArray) {
+        if (isNaN(item.quantity) || item.quantity <= 0) {
+          throw new Error('La cantidad de cajas debe ser un número entero mayor a cero.');
+        }
+        if (item.quantity > 9999) {
+          throw new Error('La cantidad de cajas por tipo no puede ser mayor a 9999.');
+        }
+        const productExists = products.some(p => p.code === item.boxType);
+        if (!productExists) {
+          throw new Error(`El tipo de caja "${item.boxType}" no existe en el catálogo.`);
+        }
+      }
+
+      await addClient(trimmedClientName);
 
       const payload = {
-        client_name: clientName,
+        client_name: trimmedClientName,
         items: itemsArray,
-        notes: notes || null,
-        created_by: 'Luis'
+        notes: notes ? notes.trim() : null,
+        created_by: userName
       };
 
       const { data, error } = await supabase
@@ -60,7 +99,10 @@ export default function ReturnForm({ onReturnCreated }) {
         .insert([payload])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase DB error:', error);
+        throw new Error('Error al conectar con el servidor. No se pudo registrar la devolución.');
+      }
       
       if (data && data[0]) {
         markOwnAction(data[0].id);
@@ -71,7 +113,7 @@ export default function ReturnForm({ onReturnCreated }) {
       onReturnCreated();
     } catch (error) {
       haptics.error();
-      toast.error('Error al registrar devolución: ' + error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

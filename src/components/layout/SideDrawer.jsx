@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BarChart3, Package, Info, ChevronRight } from 'lucide-react';
+import { X, BarChart3, Package, Info, ChevronRight, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
+  const { userName, user, signOut } = useAuth();
   const menuItems = [
     { id: 'analytics', label: 'Análisis y Estadísticas', icon: BarChart3, color: '#8b5cf6' },
     { id: 'history', label: 'Historial Completo', icon: Package, color: '#60a5fa' },
@@ -123,19 +125,48 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
             </div>
 
             {/* Footer */}
-            <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{
-                width: '40px', height: '40px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, var(--surface-color), var(--surface-hover))',
-                border: '1px solid var(--surface-border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
-              }}>
-                <Package size={18} color="var(--accent-primary)" />
+            <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '40px', height: '40px', borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--surface-color), var(--surface-hover))',
+                  border: '1px solid var(--surface-border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 700, color: 'var(--accent-primary)'
+                }}>
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userName}</p>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
+                </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Luis Administrador</p>
-                <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', margin: 0 }}>Gestión de Registros</p>
-              </div>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  signOut().catch(err => console.error("SignOut error:", err));
+                  onClose();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '12px',
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: '#ef4444',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <LogOut size={16} />
+                Cerrar Sesión
+              </motion.button>
             </div>
           </motion.div>
         </>

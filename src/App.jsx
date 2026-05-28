@@ -6,6 +6,7 @@ import Header from './components/layout/Header';
 import SideDrawer from './components/layout/SideDrawer';
 import BottomNav from './components/layout/BottomNav';
 import { ToastProvider, useToast } from './context/ToastContext';
+import { useAuth } from './context/AuthContext';
 
 // Pages
 import Resumen from './pages/Resumen';
@@ -18,6 +19,7 @@ import Historial from './pages/Historial';
 // Feature Components
 import OrderDetail from './features/orders/OrderDetail';
 import OrderForm from './features/orders/OrderForm';
+import AuthPage from './features/auth/AuthPage';
 
 // Hooks
 import { useOrders } from './features/orders/useOrders';
@@ -26,6 +28,7 @@ import { useRealtimeNotifications } from './hooks/useRealtimeNotifications';
 import { requestNotificationPermission } from './utils/notificationService';
 
 function AppContent() {
+  const { user, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('resumen');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
@@ -40,13 +43,14 @@ function AppContent() {
 
   // Request notification permission on first user interaction
   useEffect(() => {
+    if (!user) return;
     const handleFirstInteraction = () => {
       requestNotificationPermission();
       window.removeEventListener('click', handleFirstInteraction);
     };
     window.addEventListener('click', handleFirstInteraction);
     return () => window.removeEventListener('click', handleFirstInteraction);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const handleOnline = () => {
@@ -149,6 +153,18 @@ function AppContent() {
         return <Resumen key="resumen-def" orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
     }
   };
+
+  if (authLoading) {
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', minHeight: '100dvh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#050505' }}>
+        <div className="spinner-small" style={{ width: '40px', height: '40px', borderWidth: '3px' }} />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthPage />;
+  }
 
   return (
     <div className="app-container">

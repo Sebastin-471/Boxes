@@ -13,7 +13,8 @@ export function useReturns() {
       const data = await returnService.getAll();
       setReturns(data);
     } catch (error) {
-      toast.error('Error al cargar devoluciones: ' + error.message);
+      console.error('Error loading returns:', error);
+      toast.error('Error al cargar devoluciones. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -24,7 +25,8 @@ export function useReturns() {
       await returnService.create(payload);
       toast.success('Devolución registrada');
     } catch (error) {
-      toast.error('Error al registrar: ' + error.message);
+      console.error('Error registering return:', error);
+      toast.error('Error al registrar la devolución.');
     }
   };
 

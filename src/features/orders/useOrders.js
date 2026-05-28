@@ -13,7 +13,8 @@ export function useOrders() {
       const data = await orderService.getAll();
       setOrders(data);
     } catch (error) {
-      toast.error('Error al cargar pedidos: ' + error.message);
+      console.error('Error fetching orders:', error);
+      toast.error('Error al cargar pedidos. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -24,7 +25,8 @@ export function useOrders() {
       await orderService.update(id, payload);
       // Realtime subscription will handle the UI update
     } catch (error) {
-      toast.error('Error al actualizar estado: ' + error.message);
+      console.error('Error updating order status:', error);
+      toast.error('Error al actualizar el estado del pedido.');
     }
   };
 
@@ -33,7 +35,8 @@ export function useOrders() {
       await orderService.delete(id);
       toast.success('Pedido eliminado');
     } catch (error) {
-      toast.error('Error al eliminar: ' + error.message);
+      console.error('Error deleting order:', error);
+      toast.error('Error al eliminar el pedido.');
     }
   };
 

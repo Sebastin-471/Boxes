@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 // Conditional Service Worker registration for Capacitor compatibility
 if ('serviceWorker' in navigator) {
@@ -30,6 +31,8 @@ if ('serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </StrictMode>,
 )
