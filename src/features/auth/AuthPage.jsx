@@ -12,12 +12,33 @@ export default function AuthPage() {
   const toast = useToast();
   
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(() => {
+    const saved = localStorage.getItem('boxmanager_remember_me');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [email, setEmail] = useState(() => {
+    const saved = localStorage.getItem('boxmanager_remember_me');
+    const shouldRemember = saved !== null ? JSON.parse(saved) : true;
+    return shouldRemember ? (localStorage.getItem('boxmanager_remembered_email') || '') : '';
+  });
+  const [password, setPassword] = useState(() => {
+    const saved = localStorage.getItem('boxmanager_remember_me');
+    const shouldRemember = saved !== null ? JSON.parse(saved) : true;
+    return shouldRemember ? (localStorage.getItem('boxmanager_remembered_password') || '') : '';
+  });
   const [displayName, setDisplayName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  const handleRememberMeChange = (checked) => {
+    setRememberMe(checked);
+    localStorage.setItem('boxmanager_remember_me', JSON.stringify(checked));
+    if (!checked) {
+      localStorage.removeItem('boxmanager_remembered_email');
+      localStorage.removeItem('boxmanager_remembered_password');
+    }
+  };
 
   const validateEmail = (val) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -58,10 +79,30 @@ export default function AuthPage() {
         await signIn(email, password);
         haptics.success();
         toast.success('Sesión iniciada con éxito');
+        
+        if (rememberMe) {
+          localStorage.setItem('boxmanager_remember_me', 'true');
+          localStorage.setItem('boxmanager_remembered_email', email);
+          localStorage.setItem('boxmanager_remembered_password', password);
+        } else {
+          localStorage.setItem('boxmanager_remember_me', 'false');
+          localStorage.removeItem('boxmanager_remembered_email');
+          localStorage.removeItem('boxmanager_remembered_password');
+        }
       } else {
         await signUp(email, password, displayName.trim());
         haptics.success();
         toast.success('Registro completado. ¡Bienvenido!');
+        
+        if (rememberMe) {
+          localStorage.setItem('boxmanager_remember_me', 'true');
+          localStorage.setItem('boxmanager_remembered_email', email);
+          localStorage.setItem('boxmanager_remembered_password', password);
+        } else {
+          localStorage.setItem('boxmanager_remember_me', 'false');
+          localStorage.removeItem('boxmanager_remembered_email');
+          localStorage.removeItem('boxmanager_remembered_password');
+        }
       }
     } catch (err) {
       haptics.error();
@@ -229,6 +270,34 @@ export default function AuthPage() {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', margin: '-4px 0 -4px 0' }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                color: 'var(--text-secondary)',
+                userSelect: 'none'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => handleRememberMeChange(e.target.checked)}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    accentColor: 'var(--accent-primary)',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                  }}
+                />
+                <span>Recordar mi usuario</span>
+              </label>
             </div>
 
             <Button
