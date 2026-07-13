@@ -1,36 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Hanken+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 :root {
-  --bg-color: #030305;
-  --bg-secondary: #0a0a0f;
-  --surface-color: rgba(255, 255, 255, 0.05);
-  --surface-hover: rgba(255, 255, 255, 0.1);
-  --surface-border: rgba(255, 255, 255, 0.12);
-  --surface-elevated: rgba(255, 255, 255, 0.08);
+  /* Colors - Taller Estuche (Warm & Tactile) */
+  --bg-color: #171310;       /* Tinta terciopelo (negro cálido) */
+  --bg-secondary: #211A15;
 
-  --accent-primary: #a855f7;
-  --accent-primary-soft: rgba(168, 85, 247, 0.2);
-  --accent-success: #10b981;
-  --accent-success-soft: rgba(16, 185, 129, 0.2);
-  --accent-warning: #f59e0b;
-  --accent-warning-soft: rgba(245, 158, 11, 0.2);
-  --accent-error: #ef4444;
-  --accent-error-soft: rgba(239, 68, 68, 0.2);
+  --accent-primary: #CBA35C; /* Foil / oro mate */
+  --accent-primary-soft: rgba(203, 163, 92, 0.15);
+  
+  --accent-success: #8FA06A; /* Eucalipto (entregado) */
+  --accent-success-soft: rgba(143, 160, 106, 0.15);
+  
+  --accent-warning: #C08457; /* Terracota kraft (pendiente) */
+  --accent-warning-soft: rgba(192, 132, 87, 0.15);
+  
+  --accent-error: #C67F86;   /* Rosa satén (devoluciones/eliminar) */
+  --accent-error-soft: rgba(198, 127, 134, 0.15);
 
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #71717a;
+  --text-primary: #F4ECDD;   /* Marfil */
+  --text-secondary: #B7A992; /* Taupe claro */
+  --text-tertiary: #8A7C67;  /* Taupe oscuro */
 
-  --glass-bg: rgba(10, 10, 15, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.15);
+  /* Surfaces - Cartulina translúcida */
+  --surface-color: rgba(244, 236, 221, 0.05);
+  --surface-hover: rgba(244, 236, 221, 0.08);
+  --surface-border: rgba(244, 236, 221, 0.12);
+  --surface-elevated: rgba(244, 236, 221, 0.08);
 
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(23, 19, 16, 0.85); /* Terciopelo translúcido */
+  --glass-border: rgba(244, 236, 221, 0.15);
 
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  /* Shadows - Sombras cálidas */
+  --shadow-card: 0 4px 15px rgba(20, 15, 10, 0.6), 0 0 0 1px rgba(244, 236, 221, 0.06);
+  --shadow-elevated: 0 12px 30px rgba(10, 5, 0, 0.8), 0 0 0 1px rgba(244, 236, 221, 0.1);
 
-  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Radii - Estilo cartón/etiqueta */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Typography Tokens */
+  --font-ui: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', serif;
+  --font-mono: 'Space Mono', monospace;
+
+  font-family: var(--font-ui);
   line-height: 1.6;
   color-scheme: dark;
   background-color: var(--bg-color);

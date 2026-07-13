@@ -62,27 +62,27 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
       id: 'dashboard',
       icon: Calendar,
       ...stats.today,
-      accentColor: '#a78bfa',
-      gradientFrom: 'rgba(139,92,246,0.08)',
-      gradientTo: 'rgba(139,92,246,0.02)',
+      accentColor: 'var(--accent-warning)',
+      gradientFrom: 'var(--accent-warning-soft)',
+      gradientTo: 'transparent',
     },
     {
       title: 'Semana',
       id: 'dashboard',
       icon: TrendingUp,
       ...stats.week,
-      accentColor: '#60a5fa',
-      gradientFrom: 'rgba(96,165,250,0.08)',
-      gradientTo: 'rgba(96,165,250,0.02)',
+      accentColor: 'var(--accent-primary)',
+      gradientFrom: 'var(--accent-primary-soft)',
+      gradientTo: 'transparent',
     },
     {
       title: 'Mes',
       id: 'history',
       icon: Package,
       ...stats.month,
-      accentColor: '#34d399',
-      gradientFrom: 'rgba(16,185,129,0.08)',
-      gradientTo: 'rgba(16,185,129,0.02)',
+      accentColor: 'var(--accent-success)',
+      gradientFrom: 'var(--accent-success-soft)',
+      gradientTo: 'transparent',
     },
   ];
 
@@ -166,11 +166,11 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <ArrowUpRight size={12} color="#10b981" />
+                  <ArrowUpRight size={12} color="var(--accent-success)" />
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{card.delivered}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <ArrowDownRight size={12} color="#f59e0b" />
+                  <ArrowDownRight size={12} color="var(--accent-error)" />
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{card.returned}</span>
                 </div>
               </div>

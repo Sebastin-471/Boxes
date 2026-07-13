@@ -14,8 +14,8 @@ import { markOwnAction } from '../../utils/notificationService';
 const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido por el cliente'];
 
 const STATUS_MAP = {
-  'CREATED': { label: 'PENDIENTE', order: 1, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: '#a78bfa', prev: null },
-  'READY': { label: 'LISTO', order: 2, next: 'DELIVERED', nextLabel: 'Marcar como Entregado', nextIcon: CheckCircle2, color: '#60a5fa', prev: 'CREATED' },
+  'CREATED': { label: 'PENDIENTE', order: 1, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: 'var(--accent-warning)', prev: null },
+  'READY': { label: 'LISTO', order: 2, next: 'DELIVERED', nextLabel: 'Marcar Entregado', nextIcon: CheckCircle2, color: 'var(--accent-primary)', prev: 'CREATED' },
   'DELIVERED': { label: 'ENTREGADO', order: 3, next: null, color: 'var(--accent-success)', prev: 'READY' }
 };
 

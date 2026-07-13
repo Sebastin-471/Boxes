@@ -34,14 +34,14 @@ export default function BottomNav({ activeTab, onTabChange }) {
                 strokeWidth={isActive ? 2.5 : 1.8}
                 style={{
                   color: isActive
-                    ? (tab.id === 'returns' ? '#f59e0b' : 'var(--accent-primary)')
+                    ? (tab.id === 'returns' ? 'var(--accent-error)' : 'var(--accent-primary)')
                     : 'var(--text-tertiary)'
                 }}
               />
             </motion.div>
             <span style={{
               color: isActive
-                ? (tab.id === 'returns' ? '#f59e0b' : 'var(--accent-primary)')
+                ? (tab.id === 'returns' ? 'var(--accent-error)' : 'var(--accent-primary)')
                 : 'var(--text-tertiary)',
               letterSpacing: '0.02em'
             }}>
@@ -56,7 +56,7 @@ export default function BottomNav({ activeTab, onTabChange }) {
                   width: '20px',
                   height: '2px',
                   borderRadius: '1px',
-                  background: tab.id === 'returns' ? '#f59e0b' : 'var(--accent-primary)',
+                  background: tab.id === 'returns' ? 'var(--accent-error)' : 'var(--accent-primary)',
                 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               />

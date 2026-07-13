@@ -9,8 +9,8 @@ import Badge from '../../components/common/Badge';
 const STATUS_FILTERS = ['Todos', 'Pendiente', 'Listos'];
 
 const STATUS_DISPLAY = {
-  'CREATED': { label: 'Pendiente', color: '#a78bfa' },
-  'READY': { label: 'Listo', color: '#60a5fa' },
+  'CREATED': { label: 'Pendiente', color: 'var(--accent-warning)' },
+  'READY': { label: 'Listo', color: 'var(--accent-primary)' },
   'DELIVERED': { label: 'Entregado', color: 'var(--accent-success)' }
 };
 
@@ -158,8 +158,8 @@ export default function OrderList({ orders, onOrderClick, title, loading }) {
             <div className="empty-icon">
               <Box size={40} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px' }}>No hay pedidos</h3>
-            <p style={{ color: 'var(--text-tertiary)', fontSize: '0.95rem' }}>Aún no hay pedidos activos en esta categoría.</p>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px' }}>Todavía no hay pedidos</h3>
+            <p style={{ color: 'var(--text-tertiary)', fontSize: '0.95rem' }}>Crea el primero usando el botón de la barra inferior.</p>
           </motion.div>
         )}
       </AnimatePresence>

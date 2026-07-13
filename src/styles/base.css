@@ -13,7 +13,6 @@ body {
 
 #root {
   width: 100%;
-  /* max-width: 1200px; */
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100dvh;
@@ -54,26 +53,45 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
+/* Accessibility & Quality */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Typography */
 .section-title {
-  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 16px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .section-subtitle {
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-tertiary);
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .section-divider {
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--accent-primary);
   margin-bottom: 14px;
@@ -81,24 +99,26 @@ body {
   border-bottom: 1px solid var(--surface-border);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .view-title {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
   margin-bottom: 20px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .step-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 .step-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-tertiary);
   margin-bottom: 28px;
   font-weight: 400;
@@ -107,7 +127,7 @@ body {
 /* Selection */
 ::selection {
   background: var(--accent-primary);
-  color: white;
+  color: var(--bg-color);
 }
 
 /* Scrollbar */
@@ -120,6 +140,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(244, 236, 221, 0.15);
   border-radius: 4px;
 }

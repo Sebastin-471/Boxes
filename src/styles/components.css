@@ -1,4 +1,4 @@
-/* Cards */
+/* Cards - Superficie mate tipo cartulina */
 .card-glass {
   background: var(--surface-color);
   border: 1px solid var(--surface-border);
@@ -13,14 +13,36 @@
   transform: scale(0.985);
 }
 
-/* Badges */
+/* Sellos (reemplaza badges genéricos) */
 .badge-status {
   padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.6rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.05);
+}
+
+.seal::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 1px dashed currentColor;
+  opacity: 0.4;
 }
 
 /* Buttons */
@@ -51,21 +73,28 @@
 
 .btn-nav.active {
   background: var(--accent-primary);
-  color: white;
+  color: var(--bg-color);
 }
 
 .btn-submit {
-  background: var(--accent-success);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--bg-color);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 10px var(--accent-primary-soft);
+}
+.btn-submit:hover, .btn-submit:focus {
+  background: #deb367;
 }
 
 /* Forms */
 .input-label {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
   margin-bottom: 10px;
   display: block;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .custom-input, .custom-textarea {
@@ -89,7 +118,7 @@
   outline: none;
   border-color: var(--accent-primary);
   background: var(--surface-hover);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-primary-soft);
 }
 
 /* Box items */
@@ -116,18 +145,18 @@
 }
 
 .box-item.return-selected {
-  border-color: var(--accent-warning);
-  background: var(--accent-warning-soft);
+  border-color: var(--accent-error);
+  background: var(--accent-error-soft);
 }
 
 .qty-input {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(244, 236, 221, 0.06);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   width: 72px;
   height: 38px;
   text-align: center;
-  color: white;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 1rem;
   font-family: inherit;

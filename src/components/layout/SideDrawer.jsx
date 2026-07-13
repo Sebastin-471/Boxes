@@ -6,8 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
   const { userName, user, signOut } = useAuth();
   const menuItems = [
-    { id: 'analytics', label: 'Análisis y Estadísticas', icon: BarChart3, color: '#8b5cf6' },
-    { id: 'history', label: 'Historial Completo', icon: Package, color: '#60a5fa' },
+    { id: 'analytics', label: 'Análisis y Estadísticas', icon: BarChart3, color: 'var(--accent-primary)' },
+    { id: 'history', label: 'Historial Completo', icon: Package, color: 'var(--accent-success)' },
   ];
 
   const secondaryItems = [
@@ -52,14 +52,15 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{
                   width: '36px', height: '36px',
-                  background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                  background: 'var(--accent-primary)',
                   borderRadius: '10px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: '1rem', color: 'white'
+                  fontWeight: 800, fontSize: '1.2rem', color: 'var(--bg-color)',
+                  fontFamily: 'var(--font-display)'
                 }}>
                   B
                 </div>
-                <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>BoxManager</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>BoxManager</span>
               </div>
               <motion.button
                 whileTap={{ scale: 0.9 }}

@@ -16,7 +16,7 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 
 const CHART_COLORS = [
-  '#8b5cf6', '#a78bfa', '#c4b5fd',
+  'var(--accent-primary)', '#a78bfa', '#c4b5fd',
   '#60a5fa', '#3b82f6', '#2563eb',
   '#10b981', '#34d399', '#6ee7b7',
   '#f59e0b', '#fbbf24', '#fcd34d',
@@ -153,7 +153,7 @@ export default function Analytics({ orders, returns }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <BarChart3 size={22} color="#8b5cf6" />
+            <BarChart3 size={22} color="var(--accent-primary)" />
           </div>
           <div>
             <h2 className="step-title" style={{ marginBottom: 0 }}>Análisis</h2>
@@ -193,8 +193,8 @@ export default function Analytics({ orders, returns }) {
             <AreaChart data={monthlyData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <defs>
                 <linearGradient id="gradientDelivered" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradientReturned" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
@@ -209,7 +209,7 @@ export default function Analytics({ orders, returns }) {
                 type="monotone"
                 dataKey="entregadas"
                 name="Entregadas"
-                stroke="#8b5cf6"
+                stroke="var(--accent-primary)"
                 strokeWidth={2}
                 fill="url(#gradientDelivered)"
               />
@@ -331,7 +331,7 @@ export default function Analytics({ orders, returns }) {
               }}
             >
               <span style={{ flex: 1, color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{row.month}</span>
-              <span style={{ width: '60px', textAlign: 'right', color: '#8b5cf6', fontWeight: 500 }}>{row.entregadas}</span>
+              <span style={{ width: '60px', textAlign: 'right', color: 'var(--accent-primary)', fontWeight: 500 }}>{row.entregadas}</span>
               <span style={{ width: '60px', textAlign: 'right', color: '#f59e0b', fontWeight: 500 }}>{row.devueltas}</span>
               <span style={{ width: '50px', textAlign: 'right', fontWeight: 600 }}>{row.neto}</span>
             </div>

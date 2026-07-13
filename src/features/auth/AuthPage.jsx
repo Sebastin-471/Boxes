@@ -141,19 +141,19 @@ export default function AuthPage() {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
-      background: 'radial-gradient(circle at top left, #120e2e 0%, #050505 50%, #050505 100%)',
+      background: 'radial-gradient(circle at top left, #2f251c 0%, #171310 50%, #171310 100%)',
       position: 'relative',
       overflow: 'hidden'
     }}>
       {/* Dynamic Background Glows */}
       <div style={{
         position: 'absolute', width: '250px', height: '250px',
-        background: 'rgba(139, 92, 246, 0.15)', borderRadius: '50%',
+        background: 'var(--accent-primary-soft)', borderRadius: '50%',
         top: '-50px', left: '-50px', filter: 'blur(80px)', pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute', width: '250px', height: '250px',
-        background: 'rgba(16, 185, 129, 0.08)', borderRadius: '50%',
+        background: 'var(--accent-success-soft)', borderRadius: '50%',
         bottom: '-50px', right: '-50px', filter: 'blur(80px)', pointerEvents: 'none'
       }} />
 
@@ -167,20 +167,21 @@ export default function AuthPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '52px', height: '52px',
-            background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+            background: 'var(--accent-primary)',
             borderRadius: '16px',
             display: 'flex', alignItems: 'center', justifyItems: 'center',
             justifyContent: 'center',
-            fontWeight: 900, fontSize: '1.6rem', color: 'white',
-            boxShadow: '0 8px 24px rgba(139, 92, 246, 0.3)',
-            marginBottom: '16px'
+            fontWeight: 900, fontSize: '1.6rem', color: 'var(--bg-color)',
+            boxShadow: '0 8px 24px var(--accent-primary-soft)',
+            marginBottom: '16px',
+            fontFamily: 'var(--font-display)'
           }}>
             B
           </div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', margin: 0 }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 600, letterSpacing: '-0.03em', margin: 0 }}>
             BoxManager
           </h1>
-          <p style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem', marginTop: '4px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontSize: '0.65rem', marginTop: '6px', letterSpacing: '0.1em' }}>
             {isLogin ? 'Inicia sesión para gestionar pedidos' : 'Crea una cuenta para comenzar'}
           </p>
         </div>

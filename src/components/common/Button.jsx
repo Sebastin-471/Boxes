@@ -13,9 +13,9 @@ export default function Button({
 }) {
   const variantStyles = {
     primary: { 
-      background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', 
-      color: 'white',
-      boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)'
+      background: 'var(--accent-primary)', 
+      color: 'var(--bg-color)',
+      boxShadow: '0 4px 16px var(--accent-primary-soft)'
     },
     secondary: { 
       background: 'var(--surface-color)', 
@@ -23,14 +23,14 @@ export default function Button({
       border: '1px solid var(--surface-border)'
     },
     warning: { 
-      background: 'linear-gradient(135deg, #f59e0b, #d97706)', 
-      color: 'white',
-      boxShadow: '0 4px 16px rgba(245, 158, 11, 0.3)'
+      background: 'var(--accent-warning)', 
+      color: 'var(--bg-color)',
+      boxShadow: '0 4px 16px var(--accent-warning-soft)'
     },
     danger: { 
       background: 'none', 
-      color: '#ef4444',
-      border: '1px solid rgba(239, 68, 68, 0.25)'
+      color: 'var(--accent-error)',
+      border: '1px solid var(--accent-error-soft)'
     },
     ghost: { 
       background: 'none', 
@@ -38,9 +38,9 @@ export default function Button({
       border: '1px solid var(--surface-border)'
     },
     success: {
-      background: 'linear-gradient(135deg, #10b981, #059669)',
-      color: 'white',
-      boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)'
+      background: 'var(--accent-success)',
+      color: 'var(--bg-color)',
+      boxShadow: '0 4px 16px var(--accent-success-soft)'
     }
   };
 

@@ -9,7 +9,7 @@ export default function Header({ onMenuClick }) {
       justifyContent: 'space-between',
       alignItems: 'center',
       borderBottom: '1px solid var(--surface-border)',
-      background: 'rgba(5, 5, 5, 0.88)',
+      background: 'var(--glass-bg)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <button
@@ -33,18 +33,19 @@ export default function Header({ onMenuClick }) {
           <div style={{
             width: '28px',
             height: '28px',
-            background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+            background: 'var(--accent-primary)',
             borderRadius: '8px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '0.75rem',
+            fontSize: '0.9rem',
             fontWeight: 800,
-            color: 'white'
+            color: 'var(--bg-color)',
+            fontFamily: 'var(--font-display)'
           }}>
             B
           </div>
-          <h1 style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.02em' }}>BoxManager</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 600, letterSpacing: '-0.02em' }}>BoxManager</h1>
         </div>
       </div>
       <button aria-label="Perfil de usuario" style={{
