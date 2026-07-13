@@ -13,19 +13,24 @@ export default function AuthPage() {
   
   const [isLogin, setIsLogin] = useState(true);
   const [rememberMe, setRememberMe] = useState(() => {
-    const saved = localStorage.getItem('boxmanager_remember_me');
-    return saved !== null ? JSON.parse(saved) : true;
+    try {
+      const saved = localStorage.getItem('boxmanager_remember_me');
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
   });
   const [email, setEmail] = useState(() => {
-    const saved = localStorage.getItem('boxmanager_remember_me');
-    const shouldRemember = saved !== null ? JSON.parse(saved) : true;
-    return shouldRemember ? (localStorage.getItem('boxmanager_remembered_email') || '') : '';
+    try {
+      const saved = localStorage.getItem('boxmanager_remember_me');
+      const shouldRemember = saved !== null ? JSON.parse(saved) : true;
+      return shouldRemember ? (localStorage.getItem('boxmanager_remembered_email') || '') : '';
+    } catch {
+      return '';
+    }
   });
-  const [password, setPassword] = useState(() => {
-    const saved = localStorage.getItem('boxmanager_remember_me');
-    const shouldRemember = saved !== null ? JSON.parse(saved) : true;
-    return shouldRemember ? (localStorage.getItem('boxmanager_remembered_password') || '') : '';
-  });
+  // SECURITY: Never store password in localStorage — Supabase handles session persistence via JWT
+  const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,7 +41,6 @@ export default function AuthPage() {
     localStorage.setItem('boxmanager_remember_me', JSON.stringify(checked));
     if (!checked) {
       localStorage.removeItem('boxmanager_remembered_email');
-      localStorage.removeItem('boxmanager_remembered_password');
     }
   };
 
@@ -67,42 +71,47 @@ export default function AuthPage() {
       return;
     }
 
-    if (!isLogin && !displayName.trim()) {
-      haptics.error();
-      setErrorMsg('Por favor ingresa tu nombre.');
-      return;
+    if (!isLogin) {
+      const trimmedName = displayName.trim();
+      if (!trimmedName) {
+        haptics.error();
+        setErrorMsg('Por favor ingresa tu nombre.');
+        return;
+      }
+      if (trimmedName.length < 2 || trimmedName.length > 50) {
+        haptics.error();
+        setErrorMsg('El nombre debe tener entre 2 y 50 caracteres.');
+        return;
+      }
+      const nameRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\-.]+$/;
+      if (!nameRegex.test(trimmedName)) {
+        haptics.error();
+        setErrorMsg('El nombre contiene caracteres no permitidos.');
+        return;
+      }
     }
 
     setLoading(true);
     try {
+      const sanitizedEmail = email.trim().toLowerCase();
+
       if (isLogin) {
-        await signIn(email, password);
+        await signIn(sanitizedEmail, password);
         haptics.success();
         toast.success('Sesión iniciada con éxito');
-        
-        if (rememberMe) {
-          localStorage.setItem('boxmanager_remember_me', 'true');
-          localStorage.setItem('boxmanager_remembered_email', email);
-          localStorage.setItem('boxmanager_remembered_password', password);
-        } else {
-          localStorage.setItem('boxmanager_remember_me', 'false');
-          localStorage.removeItem('boxmanager_remembered_email');
-          localStorage.removeItem('boxmanager_remembered_password');
-        }
       } else {
-        await signUp(email, password, displayName.trim());
+        await signUp(sanitizedEmail, password, displayName.trim());
         haptics.success();
         toast.success('Registro completado. ¡Bienvenido!');
-        
-        if (rememberMe) {
-          localStorage.setItem('boxmanager_remember_me', 'true');
-          localStorage.setItem('boxmanager_remembered_email', email);
-          localStorage.setItem('boxmanager_remembered_password', password);
-        } else {
-          localStorage.setItem('boxmanager_remember_me', 'false');
-          localStorage.removeItem('boxmanager_remembered_email');
-          localStorage.removeItem('boxmanager_remembered_password');
-        }
+      }
+
+      // Only remember the email — NEVER store the password
+      if (rememberMe) {
+        localStorage.setItem('boxmanager_remember_me', 'true');
+        localStorage.setItem('boxmanager_remembered_email', sanitizedEmail);
+      } else {
+        localStorage.setItem('boxmanager_remember_me', 'false');
+        localStorage.removeItem('boxmanager_remembered_email');
       }
     } catch (err) {
       haptics.error();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Check, Search, RotateCcw } from 'lucide-react';
-import { supabase } from '../../api/client';
+import { supabase, sanitizeText } from '../../api/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../../context/ToastContext';
 import { useProducts } from '../../hooks/useProducts';
@@ -90,7 +90,7 @@ export default function ReturnForm({ onReturnCreated }) {
       const payload = {
         client_name: trimmedClientName,
         items: itemsArray,
-        notes: notes ? notes.trim() : null,
+        notes: notes ? sanitizeText(notes) : null,
         created_by: userName
       };
 

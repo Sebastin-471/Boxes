@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Check, Plus, Minus, Search } from 'lucide-react';
 import { supabase } from '../../api/client';
+import { sanitizeText } from '../../api/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../../context/ToastContext';
 import { useProducts } from '../../hooks/useProducts';
@@ -99,7 +100,7 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
       const payload = {
         client_name: trimmedClientName,
         items: itemsArray,
-        notes: notes ? notes.trim() : null,
+        notes: notes ? sanitizeText(notes) : null,
         status: initialData?.status || 'CREATED',
         created_by: initialData?.created_by || userName
       };

@@ -26,6 +26,14 @@ Sistema de gestión de pedidos y logística optimizado para dispositivos móvile
 - **Gestión de Devoluciones**: Módulo dedicado para el registro de devoluciones con impacto automático en las métricas.
 - **Autocompletado**: Búsqueda inteligente de clientes y productos para agilizar el registro.
 
+## 🛡️ Seguridad y Arquitectura
+
+El sistema ha sido rigurosamente auditado y cuenta con múltiples capas de protección:
+- **Autenticación JWT Segura**: Las sesiones se manejan mediante tokens seguros, eliminando el almacenamiento en texto plano en ubicaciones vulnerables (como `localStorage`).
+- **Data Layer Guards**: Todas las operaciones a la base de datos (Supabase) están protegidas por el validador estricto `requireAuth()`, garantizando que solo los usuarios autenticados realicen acciones.
+- **Sanitización de Entradas**: Implementación de *whitelists* en los payloads de la API y algoritmos de sanitización (`sanitizeText`) sobre los campos de texto libre para bloquear ataques XSS y la inyección de caracteres de control.
+- **Hardening del Entorno**: Restricción de claves de servicio en el frontend; se delega toda la seguridad de la información a las reglas RLS (Row Level Security) nativas de la base de datos.
+
 ## 🛠️ Stack Tecnológico
 
 - **Frontend**: React 19 + Vite
@@ -44,7 +52,12 @@ Sistema de gestión de pedidos y logística optimizado para dispositivos móvile
 ### Instalación y Configuración
 1. Clona el repositorio.
 2. Instala dependencias: `npm install`
-3. Configura las variables de entorno en `src/api/client.js` con tu URL y Key de Supabase.
+3. Crea un archivo `.env` en la raíz del proyecto y configura tus credenciales públicas de Supabase:
+   ```env
+   VITE_SUPABASE_URL=tu_url_de_supabase
+   VITE_SUPABASE_ANON_KEY=tu_anon_key_publica
+   ```
+   *(Nota de Seguridad: Nunca incluyas tu Service Role Key en el archivo de entorno del frontend).*
 
 ### Comandos Disponibles
 - `npm run dev`: Inicia el servidor de desarrollo.
@@ -54,12 +67,10 @@ Sistema de gestión de pedidos y logística optimizado para dispositivos móvile
 - `npm run preview`: Previsualiza la versión de producción localmente.
 
 ## 📂 Estructura del Proyecto
-- `/src/api`: Servicios de conexión con Supabase.
-- `/src/components`: Componentes UI comunes y layout.
-- `/src/features`: Lógica de negocio (pedidos, devoluciones, dashboard).
-- `/src/hooks`: Hooks personalizados (realtime, persistencia).
-- `/src/styles`: Sistema de diseño basado en variables y utilidades.
-- `/public`: Activos estáticos y Service Worker personalizado.
-
----
-Desarrollado con ❤️ para optimizar la logística de **BoxManager**.
+- `/src/api`: Servicios de conexión con Supabase y utilidades de validación/sanitización.
+- `/src/components`: Componentes UI comunes y layout principal.
+- `/src/context`: Manejadores de estado global (Autenticación, Notificaciones Toast).
+- `/src/features`: Lógica de negocio altamente segmentada (auth, orders, returns, clients, dashboard).
+- `/src/hooks`: Hooks de React personalizados para Realtime y manejo en caché de productos.
+- `/src/styles`: Sistema de diseño fundacional basado en CSS puro.
+- `/public`: Activos estáticos, Service Worker (PWA) y Manifest.
