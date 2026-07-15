@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Truck, Calendar, CheckCircle2, User, X, PackageCheck, Edit3, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronLeft, Truck, Calendar, CheckCircle2, User, X, PackageCheck, Edit3, RotateCcw, Trash2, UserX } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,6 +24,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
   const toast = useToast();
   const { getProductLabel } = useProducts();
   const [showModal, setShowModal] = useState(false);
+  const [showAbandonModal, setShowAbandonModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const totalItems = (order.items || []).reduce((acc, item) => acc + item.quantity, 0);
 
@@ -217,6 +218,19 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         </Button>
       )}
 
+      {order.status === 'READY' && (
+        <Button
+          variant="danger"
+          ghost
+          onClick={() => setShowAbandonModal(true)}
+          disabled={loading}
+          icon={UserX}
+          style={{ marginTop: '12px', background: 'none', border: '1px solid var(--accent-error)', color: 'var(--accent-error)' }}
+        >
+          Marcar Abandonado
+        </Button>
+      )}
+
       {order.status !== 'DELIVERED' && (
         <Button
           variant="danger"
@@ -278,10 +292,66 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
                   </button>
                 ))}
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
+</motion.div>
+           </>
+         )}
+       </AnimatePresence>
+
+       {/* Abandon Confirmation Modal */}
+       <AnimatePresence>
+         {showAbandonModal && (
+           <>
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setShowAbandonModal(false)}
+               className="modal-backdrop"
+               style={{ 
+                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+                 background: 'rgba(0,0,0,0.4)', zIndex: 1000, backdropFilter: 'blur(4px)' 
+               }}
+             />
+             <motion.div 
+               initial={{ y: 300 }}
+               animate={{ y: 0 }}
+               exit={{ y: 300 }}
+               className="modal-content"
+               style={{ 
+                 position: 'fixed', bottom: 0, left: 0, right: 0, 
+                 background: 'var(--bg-color)', zIndex: 1001, 
+                 borderTop: '1px solid var(--surface-border)',
+                 borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                 padding: '24px', paddingBottom: '40px'
+               }}
+             >
+               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                 <h3 style={{ fontSize: '1.25rem' }}>Marcar como Abandonado</h3>
+                 <button onClick={() => setShowAbandonModal(false)} className="btn-icon">
+                   <X size={24} />
+                 </button>
+               </div>
+
+               <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem' }}>
+                 El cliente no ha recogido el pedido después de un tiempo prolongado. 
+                 ¿Confirmar abandono?
+               </p>
+
+               <Button
+                 variant="danger"
+                 loading={loading}
+                 onClick={() => {
+                   handleUpdateStatus('ABANDONED');
+                   setShowAbandonModal(false);
+                 }}
+                 style={{ width: '100%' }}
+               >
+                 Confirmar Abandono
+               </Button>
+             </motion.div>
+           </>
+         )}
+       </AnimatePresence>
+     </motion.div>
+   );
+ }
