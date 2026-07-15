@@ -11,7 +11,8 @@ const STATUS_FILTERS = ['Todos', 'Pendiente', 'Listos'];
 const STATUS_DISPLAY = {
   'CREATED': { label: 'Pendiente', color: 'var(--accent-warning)' },
   'READY': { label: 'Listo', color: 'var(--accent-primary)' },
-  'DELIVERED': { label: 'Entregado', color: 'var(--accent-success)' }
+  'DELIVERED': { label: 'Entregado', color: 'var(--accent-success)' },
+  'ABANDONED': { label: 'Abandonado', color: 'var(--accent-error)' }
 };
 
 export default function OrderList({ orders, onOrderClick, title, loading }) {
