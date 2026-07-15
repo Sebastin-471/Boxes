@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import PullToRefresh from '../components/common/PullToRefresh';
 
 export default function Pedidos({ orders, onOrderClick, loading, refetch }) {
-  const activeOrders = orders.filter(o => o.status !== 'DELIVERED');
+  const activeOrders = orders.filter(o => o.status === 'CREATED' || o.status === 'READY');
 
   return (
     <motion.div 

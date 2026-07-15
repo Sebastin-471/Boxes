@@ -5,7 +5,7 @@ import OrderList from '../features/orders/OrderList';
 import { motion } from 'framer-motion';
 
 export default function Resumen({ orders, returns, onOrderClick, loading, onTabNavigate }) {
-  const activeOrders = orders.filter(o => o.status !== 'DELIVERED').slice(0, 3);
+  const activeOrders = orders.filter(o => o.status === 'CREATED' || o.status === 'READY').slice(0, 3);
 
   return (
     <motion.div 
