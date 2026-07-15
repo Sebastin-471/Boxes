@@ -148,8 +148,9 @@ describe("Core Business Logic - Unit Tests", () => {
   describe("Order status transitions", () => {
     const validTransitions: Record<string, string[]> = {
       CREATED: ["READY", "DELIVERED"],
-      READY: ["DELIVERED"],
+      READY: ["DELIVERED", "ABANDONED"],
       DELIVERED: [],
+      ABANDONED: [],
     };
 
     it("allows CREATED -> READY", () => {
@@ -164,8 +165,16 @@ describe("Core Business Logic - Unit Tests", () => {
       expect(validTransitions.READY).toContain("DELIVERED");
     });
 
+    it("allows READY -> ABANDONED", () => {
+      expect(validTransitions.READY).toContain("ABANDONED");
+    });
+
     it("blocks DELIVERED -> any", () => {
       expect(validTransitions.DELIVERED).toHaveLength(0);
+    });
+
+    it("blocks ABANDONED -> any (terminal state)", () => {
+      expect(validTransitions.ABANDONED).toHaveLength(0);
     });
 
     it("blocks READY -> CREATED (no backward)", () => {

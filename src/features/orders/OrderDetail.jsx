@@ -16,7 +16,8 @@ const DELIVERERS = ['Jimmy', 'Sebastian', 'Luis', 'Mauricio', 'July', 'Recogido 
 const STATUS_MAP = {
   'CREATED': { label: 'PENDIENTE', order: 1, next: 'READY', nextLabel: 'Marcar como Listo', nextIcon: PackageCheck, color: 'var(--accent-warning)', prev: null },
   'READY': { label: 'LISTO', order: 2, next: 'DELIVERED', nextLabel: 'Marcar Entregado', nextIcon: CheckCircle2, color: 'var(--accent-primary)', prev: 'CREATED' },
-  'DELIVERED': { label: 'ENTREGADO', order: 3, next: null, color: 'var(--accent-success)', prev: 'READY' }
+  'DELIVERED': { label: 'ENTREGADO', order: 3, next: null, color: 'var(--accent-success)', prev: 'READY' },
+  'ABANDONED': { label: 'ABANDONADO', order: 4, next: null, color: 'var(--accent-error)', prev: 'READY' }
 };
 
 export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
