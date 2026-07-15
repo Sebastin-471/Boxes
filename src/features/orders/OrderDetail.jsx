@@ -110,7 +110,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button onClick={onBack} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+          <button onClick={onBack} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'var(--text-primary)' }}>
             <ChevronLeft size={20} />
           </button>
           <h2 className="step-title" style={{ marginBottom: 0 }}>Detalles</h2>
@@ -131,7 +131,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{order.client_name}</h3>
           <div style={{ 
-            background: order.status === 'DELIVERED' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(139, 92, 246, 0.1)',
+            background: order.status === 'DELIVERED' ? 'var(--accent-success-soft)' : 'var(--accent-primary-soft)',
             padding: '10px',
             borderRadius: '12px',
             color: order.status === 'DELIVERED' ? 'var(--accent-success)' : 'var(--accent-primary)'
@@ -143,7 +143,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <User size={14} />
-            <span>Creado por: <strong style={{color: 'white'}}>{order.created_by || 'Luis'}</strong></span>
+             <span>Creado por: <strong style={{color: 'var(--text-primary)'}}>{order.created_by || 'Luis'}</strong></span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Calendar size={14} />
@@ -166,7 +166,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
             <span style={{ fontWeight: 600 }}>{item.quantity}x</span>
           </div>
         ))}
-        <div style={{ borderTop: '1px solid #333', marginTop: '16px', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ borderTop: '1px solid var(--hairline)', marginTop: '16px', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 600 }}>Total</span>
           <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{totalItems} cajas</span>
         </div>
@@ -223,7 +223,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
           onClick={handleDelete}
           disabled={loading}
           icon={Trash2}
-          style={{ marginTop: '12px', background: 'none', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+          style={{ marginTop: '12px', background: 'none', border: '1px solid rgba(255, 59, 48, 0.3)' }}
         >
           Eliminar Registro
         </Button>
@@ -241,7 +241,7 @@ export default function OrderDetail({ order, onBack, onStatusUpdate, onEdit }) {
               className="modal-backdrop"
               style={{ 
                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-                background: 'rgba(0,0,0,0.8)', zIndex: 1000, backdropFilter: 'blur(4px)' 
+                background: 'rgba(0,0,0,0.4)', zIndex: 1000, backdropFilter: 'blur(4px)' 
               }}
             />
             <motion.div 

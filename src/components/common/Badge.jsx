@@ -6,33 +6,25 @@ export default function Badge({ children, color = 'var(--accent-primary)', style
   let sealColor = color;
 
   const textLower = String(children).toLowerCase();
-  
+
   if (textLower.includes('pendiente')) {
     Icon = CircleDot;
-    sealColor = 'var(--accent-warning)'; // Terracota
+    sealColor = 'var(--accent-warning)';
   } else if (textLower.includes('listo')) {
     Icon = Sparkles;
-    sealColor = 'var(--accent-primary)'; // Foil
+    sealColor = 'var(--accent-primary)';
   } else if (textLower.includes('entregado')) {
     Icon = Check;
-    sealColor = 'var(--accent-success)'; // Eucalipto
+    sealColor = 'var(--accent-success)';
   } else if (textLower.includes('cancelado') || textLower.includes('devuelto')) {
     Icon = CircleDot;
-    sealColor = 'var(--accent-error)'; // Rosa
+    sealColor = 'var(--accent-error)';
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', ...style }} {...props}>
-      <div 
-        className="seal"
-        style={{ color: sealColor }}
-        title={String(children)}
-      >
-        <Icon size={14} strokeWidth={2.5} />
-      </div>
-      <span className="badge-status" style={{ color: sealColor, padding: 0 }}>
-        {children}
-      </span>
-    </div>
+    <span className="badge-status" style={{ color: sealColor, ...style }} {...props}>
+      <Icon size={13} strokeWidth={2.5} />
+      {children}
+    </span>
   );
 }

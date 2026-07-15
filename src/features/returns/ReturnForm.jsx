@@ -122,8 +122,8 @@ export default function ReturnForm({ onReturnCreated }) {
   const renderStep1 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <div style={{ background: 'rgba(245, 158, 11, 0.15)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <RotateCcw size={22} color="#f59e0b" />
+        <div style={{ background: 'var(--accent-warning-soft)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <RotateCcw size={22} color="var(--accent-warning)" />
         </div>
         <h2 className="step-title">Nueva Devolución</h2>
       </div>
@@ -149,7 +149,7 @@ export default function ReturnForm({ onReturnCreated }) {
         active={!!clientName}
         disabled={!clientName}
         onClick={() => setStep(2)}
-        style={{ marginTop: 'auto', background: '#f59e0b' }}
+        style={{ marginTop: 'auto', background: 'var(--accent-warning)' }}
       >
         Siguiente
       </Button>
@@ -159,7 +159,7 @@ export default function ReturnForm({ onReturnCreated }) {
   const renderStep2 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'var(--text-primary)' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Cajas Devueltas</h2>
@@ -211,13 +211,13 @@ export default function ReturnForm({ onReturnCreated }) {
                       onClick={(e) => e.stopPropagation()}
                       onFocus={(e) => e.target.select()}
                       style={{
-                        background: '#2a2a2a',
-                        border: 'none',
+                        background: '#ffffff',
+                        border: '1px solid var(--surface-border)',
                         borderRadius: '8px',
                         width: '80px',
                         height: '40px',
                         textAlign: 'center',
-                        color: 'white',
+                        color: 'var(--text-primary)',
                         fontWeight: '600',
                         fontSize: '1rem'
                       }}
@@ -233,14 +233,14 @@ export default function ReturnForm({ onReturnCreated }) {
       )}
 
       <div style={{ textAlign: 'center', marginBottom: '16px', color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>
-        Total a devolver: <span style={{ color: '#f59e0b', fontWeight: 600 }}>{totalCajas} cajas</span>
+        Total a devolver: <span style={{ color: 'var(--accent-warning)', fontWeight: 600 }}>{totalCajas} cajas</span>
       </div>
 
       <Button
         active={totalCajas > 0}
         disabled={totalCajas === 0}
         onClick={() => setStep(3)}
-        style={{ background: '#f59e0b' }}
+        style={{ background: 'var(--accent-warning)' }}
       >
         Siguiente
       </Button>
@@ -250,14 +250,14 @@ export default function ReturnForm({ onReturnCreated }) {
   const renderStep3 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'var(--text-primary)' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Confirmar Devolución</h2>
       </div>
       <p className="step-subtitle" style={{ marginLeft: '40px' }}>Paso 3 de 3</p>
 
-      <Card style={{ borderLeft: '3px solid #f59e0b' }}>
+      <Card style={{ borderLeft: '3px solid var(--accent-warning)' }}>
         <div style={{ marginBottom: '16px' }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '4px' }}>Devuelto por</p>
           <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>{clientName}</p>
@@ -268,7 +268,7 @@ export default function ReturnForm({ onReturnCreated }) {
           {Object.entries(selectedItems).map(([code, qty]) => (
             <div key={code} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '0.9rem' }}>
               <span style={{ color: 'var(--text-secondary)' }}>{products.find(p => p.code === code)?.name || code}</span>
-              <span style={{ fontWeight: 600, color: '#f59e0b' }}>x{qty}</span>
+              <span style={{ fontWeight: 600, color: 'var(--accent-warning)' }}>x{qty}</span>
             </div>
           ))}
         </div>
@@ -280,9 +280,9 @@ export default function ReturnForm({ onReturnCreated }) {
           </div>
         )}
 
-        <div style={{ borderTop: '1px solid #333', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 600 }}>Total devuelto</span>
-          <span style={{ color: '#f59e0b', fontWeight: 700 }}>{totalCajas} cajas</span>
+          <span style={{ color: 'var(--accent-warning)', fontWeight: 700 }}>{totalCajas} cajas</span>
         </div>
       </Card>
 
@@ -291,7 +291,7 @@ export default function ReturnForm({ onReturnCreated }) {
         onClick={handleSubmit}
         loading={loading}
         icon={RotateCcw}
-        style={{ background: '#f59e0b', marginTop: '12px' }}
+        style={{ background: 'var(--accent-warning)', marginTop: '12px' }}
       >
         Registrar Devolución
       </Button>

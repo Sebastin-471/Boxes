@@ -156,7 +156,7 @@ function AppContent() {
 
   if (authLoading) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', minHeight: '100dvh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#050505' }}>
+        <div style={{ display: 'flex', minHeight: '100vh', minHeight: '100dvh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)' }}>
         <div className="spinner-small" style={{ width: '40px', height: '40px', borderWidth: '3px' }} />
       </div>
     );

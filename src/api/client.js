@@ -17,12 +17,22 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  * Call this before any data-mutating operation (insert, update, delete).
  * Throws an error if no session is found, preventing unauthenticated DB calls.
  */
+let sessionPromise = null;
+
 export async function requireAuth() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error || !session) {
+  // Reuse the promise if there's already a session check in flight
+  if (!sessionPromise) {
+    sessionPromise = supabase.auth.getSession().finally(() => {
+      sessionPromise = null;
+    });
+  }
+  
+  const { data, error } = await sessionPromise;
+  
+  if (error || !data.session) {
     throw new Error('Sesión expirada. Por favor, inicia sesión de nuevo.');
   }
-  return session;
+  return data.session;
 }
 
 /**
@@ -44,4 +54,42 @@ export function sanitizeText(value) {
     .replace(/<[^>]*>/g, '')           // Strip HTML tags
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Strip control chars (keep \n, \r, \t)
     .trim();
+}
+
+/**
+ * Standardized Application Error
+ */
+export class AppError extends Error {
+  constructor(message, code, originalError = null) {
+    super(message);
+    this.name = 'AppError';
+    this.code = code;
+    this.originalError = originalError;
+  }
+}
+
+/**
+ * Parses raw Supabase exceptions into human-readable AppErrors
+ */
+export function handleServiceError(error, contextMessage) {
+  // Check if it's already an AppError (e.g. from requireAuth)
+  if (error instanceof AppError) throw error;
+  if (error.message === 'Sesión expirada. Por favor, inicia sesión de nuevo.') {
+    throw new AppError(error.message, 'AUTH_EXPIRED', error);
+  }
+
+  console.error(`[ServiceError] ${contextMessage}:`, error);
+
+  // Supabase/PostgREST network errors
+  if (error.message === 'Failed to fetch') {
+    throw new AppError('No hay conexión al servidor. Revisa tu internet.', 'NETWORK_ERROR', error);
+  }
+
+  // Row Level Security (RLS) violations
+  if (error.code === '42501') {
+    throw new AppError('No tienes permisos para realizar esta acción.', 'FORBIDDEN', error);
+  }
+  
+  // Generic fallback preserving context
+  throw new AppError(`${contextMessage}. Intenta de nuevo más tarde.`, 'UNKNOWN_DB_ERROR', error);
 }

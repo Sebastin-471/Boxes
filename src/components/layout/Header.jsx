@@ -40,7 +40,7 @@ export default function Header({ onMenuClick }) {
             justifyContent: 'center',
             fontSize: '0.9rem',
             fontWeight: 800,
-            color: 'var(--bg-color)',
+            color: 'var(--on-accent)',
             fontFamily: 'var(--font-display)'
           }}>
             B

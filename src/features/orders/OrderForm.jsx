@@ -175,7 +175,7 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
   const renderStep2 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(1)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'var(--text-primary)' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Seleccionar Cajas</h2>
@@ -228,13 +228,13 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
                         onClick={(e) => e.stopPropagation()}
                         onFocus={(e) => e.target.select()}
                         style={{
-                          background: '#2a2a2a',
-                          border: 'none',
+                          background: '#ffffff',
+                          border: '1px solid var(--surface-border)',
                           borderRadius: '8px',
                           width: '80px',
                           height: '40px',
                           textAlign: 'center',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           fontWeight: '600',
                           fontSize: '1rem'
                         }}
@@ -267,7 +267,7 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
   const renderStep3 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white' }}>
+        <button onClick={() => setStep(2)} className="btn-icon" style={{ background: 'var(--surface-color)', border: 'none', borderRadius: '10px', padding: '8px', color: 'var(--text-primary)' }}>
           <ChevronLeft size={20} />
         </button>
         <h2 className="step-title">Confirmar</h2>
@@ -290,7 +290,7 @@ export default function OrderForm({ onOrderCreated, initialData = null }) {
           ))}
         </div>
 
-        <div style={{ borderTop: '1px solid #333', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 600 }}>Total</span>
           <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{totalCajas} cajas</span>
         </div>

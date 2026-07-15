@@ -16,26 +16,23 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 
 const CHART_COLORS = [
-  'var(--accent-primary)', '#a78bfa', '#c4b5fd',
-  '#60a5fa', '#3b82f6', '#2563eb',
-  '#10b981', '#34d399', '#6ee7b7',
-  '#f59e0b', '#fbbf24', '#fcd34d',
-  '#ef4444', '#f87171', '#fca5a5',
-  '#ec4899', '#f472b6'
+  '#0071e3', '#5ac8fa', '#34c759', '#30d158',
+  '#ff9f0a', '#ffcc00', '#ff3b30', '#ff6482',
+  '#af52de', '#64d2ff', '#5e5ce6', '#ffd60a'
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        background: 'rgba(18,18,18,0.95)',
-        border: '1px solid #333',
+        background: 'rgba(255, 255, 255, 0.96)',
+        border: '1px solid var(--hairline)',
         borderRadius: '12px',
         padding: '12px 16px',
         backdropFilter: 'blur(12px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
       }}>
-        <p style={{ color: '#fff', fontWeight: 600, marginBottom: '6px', fontSize: '0.85rem' }}>{label}</p>
+        <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '6px', fontSize: '0.85rem' }}>{label}</p>
         {payload.map((entry, index) => (
           <p key={index} style={{ color: entry.color, fontSize: '0.8rem', marginBottom: '2px' }}>
             {entry.name}: <strong>{entry.value}</strong>
@@ -152,7 +149,7 @@ export default function Analytics({ orders, returns }) {
     <div className="view-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--accent-primary-soft)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BarChart3 size={22} color="var(--accent-primary)" />
           </div>
           <div>
@@ -197,13 +194,13 @@ export default function Analytics({ orders, returns }) {
                   <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradientReturned" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--accent-warning)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--accent-warning)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-              <XAxis dataKey="month" tick={{ fill: '#9ca3af', fontSize: 12 }} axisLine={{ stroke: '#333' }} />
-              <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} axisLine={{ stroke: '#333' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" />
+              <XAxis dataKey="month" tick={{ fill: 'var(--text-tertiary)', fontSize: 12 }} axisLine={{ stroke: 'var(--hairline)' }} />
+              <YAxis tick={{ fill: 'var(--text-tertiary)', fontSize: 12 }} axisLine={{ stroke: 'var(--hairline)' }} />
               <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
@@ -217,7 +214,7 @@ export default function Analytics({ orders, returns }) {
                 type="monotone"
                 dataKey="devueltas"
                 name="Devueltas"
-                stroke="#f59e0b"
+                stroke="var(--accent-warning)"
                 strokeWidth={2}
                 fill="url(#gradientReturned)"
               />
@@ -247,7 +244,7 @@ export default function Analytics({ orders, returns }) {
                   paddingAngle={3}
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={{ stroke: '#555' }}
+                  labelLine={{ stroke: 'var(--hairline)' }}
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
@@ -281,7 +278,7 @@ export default function Analytics({ orders, returns }) {
                       {product.average}/mes
                     </span>
                   </div>
-                  <div style={{ height: '6px', background: '#1a1a1a', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ height: '6px', background: 'var(--hairline)', borderRadius: '3px', overflow: 'hidden' }}>
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${width}%` }}
@@ -332,7 +329,7 @@ export default function Analytics({ orders, returns }) {
             >
               <span style={{ flex: 1, color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{row.month}</span>
               <span style={{ width: '60px', textAlign: 'right', color: 'var(--accent-primary)', fontWeight: 500 }}>{row.entregadas}</span>
-              <span style={{ width: '60px', textAlign: 'right', color: '#f59e0b', fontWeight: 500 }}>{row.devueltas}</span>
+              <span style={{ width: '60px', textAlign: 'right', color: 'var(--accent-warning)', fontWeight: 500 }}>{row.devueltas}</span>
               <span style={{ width: '50px', textAlign: 'right', fontWeight: 600 }}>{row.neto}</span>
             </div>
           ))}

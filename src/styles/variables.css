@@ -1,56 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Hanken+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 :root {
-  /* Colors - Taller Estuche (Warm & Tactile) */
-  --bg-color: #171310;       /* Tinta terciopelo (negro cálido) */
-  --bg-secondary: #211A15;
+  /* ===== Apple-style design tokens ===== */
 
-  --accent-primary: #CBA35C; /* Foil / oro mate */
-  --accent-primary-soft: rgba(203, 163, 92, 0.15);
-  
-  --accent-success: #8FA06A; /* Eucalipto (entregado) */
-  --accent-success-soft: rgba(143, 160, 106, 0.15);
-  
-  --accent-warning: #C08457; /* Terracota kraft (pendiente) */
-  --accent-warning-soft: rgba(192, 132, 87, 0.15);
-  
-  --accent-error: #C67F86;   /* Rosa satén (devoluciones/eliminar) */
-  --accent-error-soft: rgba(198, 127, 134, 0.15);
+  /* Backgrounds — clean "aluminum" light system */
+  --bg-color: #f5f5f7;          /* Page background (Apple silver) */
+  --bg-secondary: #ffffff;       /* Elevated page sections */
+  --bg-tertiary: #fbfbfd;        /* Subtle gradient stops */
 
-  --text-primary: #F4ECDD;   /* Marfil */
-  --text-secondary: #B7A992; /* Taupe claro */
-  --text-tertiary: #8A7C67;  /* Taupe oscuro */
+  /* Surfaces — white cards with hairline borders */
+  --surface-color: #ffffff;
+  --surface-hover: rgba(0, 0, 0, 0.035);
+  --surface-border: rgba(0, 0, 0, 0.08);
+  --surface-elevated: #ffffff;
+  --hairline: rgba(0, 0, 0, 0.08);
 
-  /* Surfaces - Cartulina translúcida */
-  --surface-color: rgba(244, 236, 221, 0.05);
-  --surface-hover: rgba(244, 236, 221, 0.08);
-  --surface-border: rgba(244, 236, 221, 0.12);
-  --surface-elevated: rgba(244, 236, 221, 0.08);
+  /* Translucent bars (iOS blur) */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.08);
 
-  --glass-bg: rgba(23, 19, 16, 0.85); /* Terciopelo translúcido */
-  --glass-border: rgba(244, 236, 221, 0.15);
+  /* Text — Apple near-black + grays */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
 
-  /* Shadows - Sombras cálidas */
-  --shadow-card: 0 4px 15px rgba(20, 15, 10, 0.6), 0 0 0 1px rgba(244, 236, 221, 0.06);
-  --shadow-elevated: 0 12px 30px rgba(10, 5, 0, 0.8), 0 0 0 1px rgba(244, 236, 221, 0.1);
+  /* Accent — Apple system blue */
+  --accent-primary: #0071e3;
+  --accent-primary-hover: #0077ed;
+  --accent-primary-soft: rgba(0, 113, 227, 0.10);
+  --on-accent: #ffffff;
 
-  /* Radii - Estilo cartón/etiqueta */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  /* Status — Apple system colors */
+  --accent-success: #34c759;
+  --accent-success-soft: rgba(52, 199, 89, 0.12);
+  --accent-warning: #ff9f0a;
+  --accent-warning-soft: rgba(255, 159, 10, 0.12);
+  --accent-error: #ff3b30;
+  --accent-error-soft: rgba(255, 59, 48, 0.12);
 
-  /* Typography Tokens */
-  --font-ui: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Fraunces', serif;
-  --font-mono: 'Space Mono', monospace;
+  /* Categorical chart palette (Apple system colors) */
+  --chart-1: #0071e3;
+  --chart-2: #5ac8fa;
+  --chart-3: #34c759;
+  --chart-4: #30d158;
+  --chart-5: #ff9f0a;
+  --chart-6: #ffcc00;
+  --chart-7: #ff3b30;
+  --chart-8: #ff6482;
+  --chart-9: #af52de;
+  --chart-10: #64d2ff;
+  --chart-11: #5e5ce6;
+  --chart-12: #ffd60a;
+
+  /* Shadows — soft, diffuse, Apple-like */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.14);
+
+  /* Radii — generous, friendly */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-pill: 980px;
+
+  /* Typography — SF Pro via system stack (no web-font download) */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-ui);
+  --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Code", monospace;
 
   font-family: var(--font-ui);
-  line-height: 1.6;
-  color-scheme: dark;
+  line-height: 1.5;
+  color-scheme: light;
   background-color: var(--bg-color);
   color: var(--text-primary);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }

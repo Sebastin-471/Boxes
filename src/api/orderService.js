@@ -1,4 +1,4 @@
-import { supabase, requireAuth, isValidUUID, sanitizeText } from './client';
+import { supabase, requireAuth, isValidUUID, sanitizeText, handleServiceError, AppError } from './client';
 
 // Whitelist of fields allowed for order creation
 const ORDER_CREATE_FIELDS = ['client_name', 'items', 'notes', 'status', 'created_by'];
@@ -23,27 +23,35 @@ function filterPayload(payload, allowedFields) {
 export const orderService = {
   async getAll() {
     await requireAuth();
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .neq('status', 'CANCELLED')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .neq('status', 'CANCELLED')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      handleServiceError(error, 'Error al obtener los pedidos');
+    }
   },
 
   async getById(id) {
     await requireAuth();
     if (!isValidUUID(id)) {
-      throw new Error('ID de pedido inválido.');
+      throw new AppError('ID de pedido inválido.', 'VALIDATION_ERROR');
     }
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      handleServiceError(error, 'Error al obtener el pedido');
+    }
   },
 
   async create(payload) {
@@ -55,18 +63,22 @@ export const orderService = {
       safePayload.notes = sanitizeText(safePayload.notes);
     }
 
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([safePayload])
-      .select();
-    if (error) throw error;
-    return data[0];
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .insert([safePayload])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      handleServiceError(error, 'Error al crear el pedido');
+    }
   },
 
   async update(id, payload) {
     await requireAuth();
     if (!isValidUUID(id)) {
-      throw new Error('ID de pedido inválido.');
+      throw new AppError('ID de pedido inválido.', 'VALIDATION_ERROR');
     }
     const safePayload = filterPayload(payload, ORDER_UPDATE_FIELDS);
 
@@ -75,26 +87,34 @@ export const orderService = {
       safePayload.notes = sanitizeText(safePayload.notes);
     }
 
-    const { data, error } = await supabase
-      .from('orders')
-      .update(safePayload)
-      .eq('id', id)
-      .select();
-    if (error) throw error;
-    return data[0];
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .update(safePayload)
+        .eq('id', id)
+        .select();
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      handleServiceError(error, 'Error al actualizar el pedido');
+    }
   },
 
   async delete(id) {
     await requireAuth();
     if (!isValidUUID(id)) {
-      throw new Error('ID de pedido inválido.');
+      throw new AppError('ID de pedido inválido.', 'VALIDATION_ERROR');
     }
-    const { error } = await supabase
-      .from('orders')
-      .update({ status: 'CANCELLED' })
-      .eq('id', id);
-    if (error) throw error;
-    return true;
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'CANCELLED' })
+        .eq('id', id);
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      handleServiceError(error, 'Error al cancelar el pedido');
+    }
   },
 
   subscribe(callback) {

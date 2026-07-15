@@ -36,7 +36,7 @@ export default function ReturnList({ returns, loading }) {
 
     return groups.map((group) => (
       <div key={group.dateStr} style={{ marginBottom: '20px' }}>
-        <h4 className="section-divider" style={{ color: '#f59e0b' }}>
+        <h4 className="section-divider" style={{ color: 'var(--accent-warning)' }}>
           {group.dateStr}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -53,18 +53,18 @@ export default function ReturnList({ returns, loading }) {
       <Card
         key={ret.id}
         idx={idx}
-        style={{ borderLeft: '3px solid #f59e0b', marginBottom: '0' }}
+        style={{ borderLeft: '3px solid var(--accent-warning)', marginBottom: '0' }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{ret.client_name}</h3>
-          <Badge color="#f59e0b">Devolución</Badge>
+          <Badge color="var(--accent-warning)">Devolución</Badge>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
           {(ret.items || []).map((item, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
               <span style={{ color: 'var(--text-secondary)' }}>{getProductLabel(item.boxType)}</span>
-              <span style={{ fontWeight: 600, color: '#f59e0b' }}>x{item.quantity}</span>
+              <span style={{ fontWeight: 600, color: 'var(--accent-warning)' }}>x{item.quantity}</span>
             </div>
           ))}
         </div>
@@ -74,14 +74,14 @@ export default function ReturnList({ returns, loading }) {
             <Calendar size={12} />
             <span>{format(new Date(ret.created_at), "d MMM, h:mm aa", { locale: es })}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f59e0b', fontSize: '0.85rem', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-warning)', fontSize: '0.85rem', fontWeight: 600 }}>
             <Package size={14} />
             <span>{totalItems} cajas</span>
           </div>
         </div>
 
         {ret.notes && (
-          <div style={{ marginTop: '10px', padding: '8px 12px', background: 'rgba(245, 158, 11, 0.05)', borderRadius: '8px', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+          <div style={{ marginTop: '10px', padding: '8px 12px', background: 'var(--accent-warning-soft)', borderRadius: '8px', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
             {ret.notes}
           </div>
         )}
@@ -124,7 +124,7 @@ export default function ReturnList({ returns, loading }) {
             animate={{ opacity: 1, scale: 1 }}
             className="empty-state"
           >
-            <div className="empty-icon" style={{ color: '#f59e0b' }}>
+            <div className="empty-icon" style={{ color: 'var(--accent-warning)' }}>
               <RotateCcw size={40} />
             </div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px' }}>Sin devoluciones</h3>

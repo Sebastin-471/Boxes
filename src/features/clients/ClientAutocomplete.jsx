@@ -68,7 +68,7 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
               zIndex: 100,
               marginTop: '4px',
               padding: '4px',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12)',
               maxHeight: '200px',
               overflowY: 'auto'
             }}
@@ -89,7 +89,7 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
                   padding: '10px 12px',
                   background: 'none',
                   border: 'none',
-                  color: 'white',
+                   color: 'var(--text-primary)',
                   textAlign: 'left',
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -108,7 +108,7 @@ export default function ClientAutocomplete({ value, onChange, placeholder = "Nom
                   padding: '8px 12px',
                   fontSize: '0.75rem',
                   color: 'var(--text-tertiary)',
-                  borderTop: filteredClients.length > 0 ? '1px solid #333' : 'none',
+                   borderTop: filteredClients.length > 0 ? '1px solid var(--hairline)' : 'none',
                   marginTop: filteredClients.length > 0 ? '4px' : 0,
                   display: 'flex',
                   alignItems: 'center',

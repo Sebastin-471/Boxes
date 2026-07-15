@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Package, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Package, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight, Box } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
   startOfDay, endOfDay,
@@ -8,8 +8,11 @@ import {
   isWithinInterval
 } from 'date-fns';
 import Card from '../../components/common/Card';
+import { useProducts } from '../../hooks/useProducts';
 
 export default function Dashboard({ orders, returns, onTabNavigate }) {
+  const { getProductLabel } = useProducts();
+
   const stats = useMemo(() => {
     const now = new Date();
     const todayInterval = { start: startOfDay(now), end: endOfDay(now) };
@@ -54,7 +57,24 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
     };
   }, [orders, returns]);
 
-  const activeOrders = orders.filter(o => o.status !== 'DELIVERED').length;
+  const activeBoxesData = useMemo(() => {
+    const activeOrders = orders.filter(o => o.status === 'CREATED' || o.status === 'READY');
+    if (activeOrders.length === 0) return null;
+
+    const totals = {};
+    activeOrders.forEach(order => {
+      (order.items || []).forEach(item => {
+        const code = item.boxType || item.type;
+        totals[code] = (totals[code] || 0) + item.quantity;
+      });
+    });
+
+    return Object.entries(totals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([code, qty]) => ({ code, qty, label: getProductLabel(code) }));
+  }, [orders, getProductLabel]);
+
+  const activeOrdersCount = orders.filter(o => o.status !== 'DELIVERED').length;
 
   const cards = [
     {
@@ -102,7 +122,7 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
           padding: '14px',
           textAlign: 'center'
         }}>
-          <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-primary)', lineHeight: 1 }}>{activeOrders}</p>
+          <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-primary)', lineHeight: 1 }}>{activeOrdersCount}</p>
           <p style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Activos</p>
         </div>
         <div style={{
@@ -137,7 +157,7 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
             onClick={() => onTabNavigate?.(card.id)}
             style={{
               background: `linear-gradient(135deg, ${card.gradientFrom} 0%, ${card.gradientTo} 100%)`,
-              borderColor: `${card.accentColor}15`,
+              borderColor: 'var(--hairline)',
               marginBottom: 0,
             }}
           >
@@ -177,6 +197,66 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
             </div>
           </Card>
         ))}
+      </div>
+
+      {/* Active boxes summary — aggregate by type for pending + ready orders */}
+      <div style={{ marginTop: '28px' }}>
+        <h3 className="section-title">Pedidos Activos por Tipo</h3>
+
+        {activeBoxesData === null ? (
+          <Card style={{ padding: '24px', textAlign: 'center' }}>
+            <Box size={32} color="var(--text-tertiary)" style={{ marginBottom: '12px', opacity: 0.5 }} />
+            <p style={{ color: 'var(--text-tertiary)', fontSize: '0.95rem' }}>
+              No hay pedidos pendientes ni listos
+            </p>
+          </Card>
+        ) : (
+          <Card style={{ padding: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {activeBoxesData.map(({ code, qty, label }, idx) => (
+                <div
+                  key={code}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 12px',
+                    background: idx % 2 === 0 ? 'transparent' : 'var(--surface-hover)',
+                    borderRadius: 'var(--radius-sm)',
+                    transition: 'background 0.15s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                      width: '32px', height: '32px',
+                      background: 'var(--accent-primary-soft)',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                      <Box size={16} color="var(--accent-primary)" />
+                    </div>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-primary)' }}>
+                      {label}
+                    </span>
+                  </div>
+                  <span style={{
+                    fontSize: '1.1rem', fontWeight: 700,
+                    color: 'var(--accent-primary)',
+                    fontVariantNumeric: 'tabular-nums',
+                    background: 'var(--accent-primary-soft)',
+                    padding: '4px 12px',
+                    borderRadius: 'var(--radius-pill)'
+                  }}>
+                    {qty}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: '12px', textAlign: 'right' }}>
+              {activeBoxesData.length} tipo{activeBoxesData.length !== 1 ? 's' : ''} • Solo pendientes y listos
+            </p>
+          </Card>
+        )}
       </div>
     </div>
   );

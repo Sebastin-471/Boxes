@@ -14,28 +14,28 @@
   width: 100%;
 }
 
-/* Header */
+/* Header — iOS translucent blur bar */
 .header-sticky {
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* Bottom Navigation */
+/* Bottom Navigation — iOS tab bar */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  /* max-width: 1200px; */
+  max-width: 600px;
   height: 72px;
-  background: rgba(5, 5, 5, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--surface-border);
+  background: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--glass-border);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -51,14 +51,13 @@
   background: none;
   border: none;
   color: var(--text-tertiary);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 500;
   cursor: pointer;
   padding: 8px 12px;
   border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   min-width: 56px;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .nav-btn:active {
@@ -70,10 +69,10 @@
 }
 
 .nav-btn.active span {
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* Drawer */
+/* Drawer — light sheet */
 .drawer-item {
   display: flex;
   align-items: center;
@@ -88,12 +87,11 @@
   transition: all 0.15s ease;
   font-family: inherit;
   font-size: 0.95rem;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .drawer-item:active {
   transform: scale(0.97);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-hover);
 }
 
 .drawer-item.active {
@@ -110,7 +108,7 @@
   z-index: 1001;
 }
 
-/* Toasts */
+/* Toasts — clean white sheet */
 .toast-container {
   position: fixed;
   top: 20px;
@@ -125,9 +123,9 @@
 }
 
 .toast {
-  background: rgba(20, 20, 20, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border: 1px solid var(--glass-border);
   padding: 14px 16px;
   border-radius: var(--radius-md);
@@ -136,4 +134,5 @@
   gap: 12px;
   box-shadow: var(--shadow-elevated);
   animation: slideUp 0.3s ease-out;
+  color: var(--text-primary);
 }

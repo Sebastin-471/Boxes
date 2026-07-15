@@ -1,29 +1,27 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
+import useSWR from 'swr';
 import { orderService } from '../../api/orderService';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 
 export function useOrders() {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const toast = useToast();
 
-  const fetchOrders = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await orderService.getAll();
-      setOrders(data);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error('Error al cargar pedidos. Por favor, intenta de nuevo.');
-    } finally {
-      setLoading(false);
+  const { data: orders = [], isLoading: loading, mutate: refetch } = useSWR(
+    user ? 'orders' : null,
+    async () => await orderService.getAll(),
+    {
+      onError: (error) => {
+        console.error('Error fetching orders:', error);
+        toast.error('Error al cargar pedidos. Verifica tu conexión e intenta de nuevo.');
+      }
     }
-  }, [toast]);
+  );
 
   const updateOrderStatus = async (id, payload) => {
     try {
       await orderService.update(id, payload);
-      // Realtime subscription will handle the UI update
     } catch (error) {
       console.error('Error updating order status:', error);
       toast.error('Error al actualizar el estado del pedido.');
@@ -41,22 +39,28 @@ export function useOrders() {
   };
 
   useEffect(() => {
-    fetchOrders();
-
+    if (!user) return;
+    
     const subscription = orderService.subscribe((payload) => {
-      fetchOrders(); // Simple refresh for now, could be optimized
+      refetch(); 
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [fetchOrders]);
+  }, [refetch, user]);
 
   return { 
     orders, 
-    setOrders,
+    setOrders: (updater) => {
+      if (typeof updater === 'function') {
+        refetch(updater(orders), { revalidate: false });
+      } else {
+        refetch(updater, { revalidate: false });
+      }
+    },
     loading, 
-    refetch: fetchOrders,
+    refetch,
     updateOrderStatus,
     deleteOrder
   };

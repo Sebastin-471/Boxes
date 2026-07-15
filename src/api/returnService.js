@@ -1,4 +1,4 @@
-import { supabase, requireAuth, sanitizeText } from './client';
+import { supabase, requireAuth, sanitizeText, handleServiceError } from './client';
 
 // Whitelist of fields allowed for return creation
 const RETURN_CREATE_FIELDS = ['client_name', 'items', 'notes', 'created_by'];
@@ -19,12 +19,16 @@ function filterPayload(payload, allowedFields) {
 export const returnService = {
   async getAll() {
     await requireAuth();
-    const { data, error } = await supabase
-      .from('returns')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('returns')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      handleServiceError(error, 'Error al obtener las devoluciones');
+    }
   },
 
   async create(payload) {
@@ -36,12 +40,16 @@ export const returnService = {
       safePayload.notes = sanitizeText(safePayload.notes);
     }
 
-    const { data, error } = await supabase
-      .from('returns')
-      .insert([safePayload])
-      .select();
-    if (error) throw error;
-    return data[0];
+    try {
+      const { data, error } = await supabase
+        .from('returns')
+        .insert([safePayload])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      handleServiceError(error, 'Error al registrar la devolución');
+    }
   },
 
   subscribe(callback) {

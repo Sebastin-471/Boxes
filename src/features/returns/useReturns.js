@@ -1,24 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
+import useSWR from 'swr';
 import { returnService } from '../../api/returnService';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 
 export function useReturns() {
-  const [returns, setReturns] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const toast = useToast();
 
-  const fetchReturns = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await returnService.getAll();
-      setReturns(data);
-    } catch (error) {
-      console.error('Error loading returns:', error);
-      toast.error('Error al cargar devoluciones. Por favor, intenta de nuevo.');
-    } finally {
-      setLoading(false);
+  const { data: returns = [], isLoading: loading, mutate: refetch } = useSWR(
+    user ? 'returns' : null,
+    async () => await returnService.getAll(),
+    {
+      onError: (error) => {
+        console.error('Error loading returns:', error);
+        toast.error('Error al cargar devoluciones. Verifica tu conexión e intenta de nuevo.');
+      }
     }
-  }, [toast]);
+  );
 
   const addReturn = async (payload) => {
     try {
@@ -31,16 +30,16 @@ export function useReturns() {
   };
 
   useEffect(() => {
-    fetchReturns();
-
+    if (!user) return;
+    
     const subscription = returnService.subscribe(() => {
-      fetchReturns();
+      refetch();
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [fetchReturns]);
+  }, [refetch, user]);
 
-  return { returns, loading, refetch: fetchReturns, addReturn };
+  return { returns, loading, refetch, addReturn };
 }

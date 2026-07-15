@@ -141,7 +141,7 @@ export default function AuthPage() {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
-      background: 'radial-gradient(circle at top left, #2f251c 0%, #171310 50%, #171310 100%)',
+      background: 'radial-gradient(120% 80% at 50% -10%, #e8f1fd 0%, #f5f5f7 55%, #f5f5f7 100%)',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -171,7 +171,7 @@ export default function AuthPage() {
             borderRadius: '16px',
             display: 'flex', alignItems: 'center', justifyItems: 'center',
             justifyContent: 'center',
-            fontWeight: 900, fontSize: '1.6rem', color: 'var(--bg-color)',
+            fontWeight: 900, fontSize: '1.6rem', color: 'var(--on-accent)',
             boxShadow: '0 8px 24px var(--accent-primary-soft)',
             marginBottom: '16px',
             fontFamily: 'var(--font-display)'
@@ -186,7 +186,7 @@ export default function AuthPage() {
           </p>
         </div>
 
-        <Card style={{ padding: '28px 24px', background: 'rgba(255, 255, 255, 0.02)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <Card style={{ padding: '28px 24px', background: '#ffffff', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid var(--hairline)', boxShadow: 'var(--shadow-card)' }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
             <AnimatePresence mode="wait">
@@ -196,14 +196,14 @@ export default function AuthPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    background: 'var(--accent-error-soft)',
+                    border: '1px solid rgba(255, 59, 48, 0.3)',
                     borderRadius: 'var(--radius-sm)',
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '10px',
-                    color: '#f87171',
+                    color: 'var(--accent-error)',
                     fontSize: '0.85rem'
                   }}
                 >
@@ -302,8 +302,8 @@ export default function AuthPage() {
                     accentColor: 'var(--accent-primary)',
                     cursor: 'pointer',
                     borderRadius: '4px',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    border: '1px solid rgba(0,0,0,0.2)',
+                    backgroundColor: 'rgba(0,0,0,0.04)',
                   }}
                 />
                 <span>Recordar mi usuario</span>

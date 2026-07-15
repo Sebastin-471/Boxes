@@ -25,7 +25,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
             onClick={onClose}
             style={{
               position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'rgba(0, 0, 0, 0.7)',
+              background: 'rgba(0, 0, 0, 0.4)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               zIndex: 1000
@@ -55,7 +55,7 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
                   background: 'var(--accent-primary)',
                   borderRadius: '10px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: '1.2rem', color: 'var(--bg-color)',
+                  fontWeight: 800, fontSize: '1.2rem', color: 'var(--on-accent)',
                   fontFamily: 'var(--font-display)'
                 }}>
                   B
@@ -155,10 +155,10 @@ export default function SideDrawer({ isOpen, onClose, onNavigate, activeTab }) {
                   gap: '8px',
                   width: '100%',
                   padding: '12px',
-                  background: 'rgba(239, 68, 68, 0.08)',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  background: 'var(--accent-error-soft)',
+                  border: '1px solid rgba(255, 59, 48, 0.3)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ef4444',
+                  color: 'var(--accent-error)',
                   fontSize: '0.875rem',
                   fontWeight: 600,
                   cursor: 'pointer',
