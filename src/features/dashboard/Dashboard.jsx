@@ -74,7 +74,7 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
       .map(([code, qty]) => ({ code, qty, label: getProductLabel(code) }));
   }, [orders, getProductLabel]);
 
-  const activeOrdersCount = orders.filter(o => o.status !== 'DELIVERED').length;
+  const activeOrdersCount = orders.filter(o => o.status === 'CREATED' || o.status === 'READY').length;
 
   const cards = [
     {
