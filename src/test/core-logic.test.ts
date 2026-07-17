@@ -181,4 +181,74 @@ describe("Core Business Logic - Unit Tests", () => {
       expect(validTransitions.READY).not.toContain("CREATED");
     });
   });
+
+  describe("Box type client breakdown (Dashboard popup logic)", () => {
+    const aggregateActiveBoxesWithClients = (orders: any[]) => {
+      const activeOrders = orders.filter(
+        (o) => o.status === "CREATED" || o.status === "READY"
+      );
+      const totals: Record<string, number> = {};
+      const clientsByType: Record<string, Record<string, number>> = {};
+      activeOrders.forEach((order) => {
+        const name = (order.client_name || "").trim();
+        (order.items || []).forEach((item: any) => {
+          const code = item.boxType || item.type;
+          totals[code] = (totals[code] || 0) + item.quantity;
+          clientsByType[code] = clientsByType[code] || {};
+          clientsByType[code][name] =
+            (clientsByType[code][name] || 0) + item.quantity;
+        });
+      });
+      return Object.entries(totals)
+        .sort((a, b) => b[1] - a[1])
+        .map(([code, qty]) => ({
+          code,
+          qty,
+          label: getBoxLabel(code),
+          clients: Object.entries(clientsByType[code])
+            .sort((a, b) => b[1] - a[1])
+            .map(([client_name, quantity]) => ({ client_name, quantity })),
+        }));
+    };
+
+    it("breaks down a box type by client with summed quantities", () => {
+      const orders = [
+        { client_name: "Ana", status: "CREATED", items: [{ boxType: "BODA", quantity: 25 }] },
+        { client_name: "Ana", status: "READY", items: [{ boxType: "BODA", quantity: 10 }] },
+        { client_name: "Luis", status: "CREATED", items: [{ boxType: "BODA", quantity: 40 }] },
+      ];
+
+      const result = aggregateActiveBoxesWithClients(orders);
+      const boda = result.find((r) => r.code === "BODA")!;
+
+      expect(boda.qty).toBe(75);
+      expect(boda.clients).toEqual([
+        { client_name: "Luis", quantity: 40 },
+        { client_name: "Ana", quantity: 35 },
+      ]);
+    });
+
+    it("only includes active orders and excludes DELIVERED", () => {
+      const orders = [
+        { client_name: "Ana", status: "CREATED", items: [{ boxType: "XV", quantity: 20 }] },
+        { client_name: "Ana", status: "DELIVERED", items: [{ boxType: "XV", quantity: 999 }] },
+      ];
+
+      const result = aggregateActiveBoxesWithClients(orders);
+      const xv = result.find((r) => r.code === "XV")!;
+
+      expect(xv.qty).toBe(20);
+      expect(xv.clients).toEqual([{ client_name: "Ana", quantity: 20 }]);
+    });
+
+    it("returns no entry for a type with only non-active orders", () => {
+      const orders = [
+        { client_name: "Ana", status: "DELIVERED", items: [{ boxType: "BODA", quantity: 5 }] },
+      ];
+
+      const result = aggregateActiveBoxesWithClients(orders);
+      const boda = result.find((r) => r.code === "BODA");
+      expect(boda).toBeUndefined();
+    });
+  });
 });
