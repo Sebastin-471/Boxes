@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Package, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight, Box } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   startOfDay, endOfDay,
   startOfWeek, endOfWeek,
@@ -12,6 +12,14 @@ import { useProducts } from '../../hooks/useProducts';
 
 export default function Dashboard({ orders, returns, onTabNavigate }) {
   const { getProductLabel } = useProducts();
+  const [selectedType, setSelectedType] = useState(null);
+
+  useEffect(() => {
+    if (!selectedType) return;
+    const onKey = (e) => { if (e.key === 'Escape') setSelectedType(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedType]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -62,16 +70,27 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
     if (activeOrders.length === 0) return null;
 
     const totals = {};
+    const clientsByType = {};
     activeOrders.forEach(order => {
+      const name = (order.client_name || '').trim();
       (order.items || []).forEach(item => {
         const code = item.boxType || item.type;
         totals[code] = (totals[code] || 0) + item.quantity;
+        clientsByType[code] = clientsByType[code] || {};
+        clientsByType[code][name] = (clientsByType[code][name] || 0) + item.quantity;
       });
     });
 
     return Object.entries(totals)
       .sort((a, b) => b[1] - a[1])
-      .map(([code, qty]) => ({ code, qty, label: getProductLabel(code) }));
+      .map(([code, qty]) => ({
+        code,
+        qty,
+        label: getProductLabel(code),
+        clients: Object.entries(clientsByType[code])
+          .sort((a, b) => b[1] - a[1])
+          .map(([client_name, quantity]) => ({ client_name, quantity })),
+      }));
   }, [orders, getProductLabel]);
 
   const activeOrdersCount = orders.filter(o => o.status === 'CREATED' || o.status === 'READY').length;
@@ -213,9 +232,13 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
         ) : (
           <Card style={{ padding: '16px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {activeBoxesData.map(({ code, qty, label }, idx) => (
+              {activeBoxesData.map(({ code, qty, label, clients }, idx) => (
                 <div
                   key={code}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedType({ code, qty, label, clients })}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedType({ code, qty, label, clients }); }}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -223,7 +246,11 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
                     padding: '10px 12px',
                     background: idx % 2 === 0 ? 'transparent' : 'var(--surface-hover)',
                     borderRadius: 'var(--radius-sm)',
-                    transition: 'background 0.15s'
+                    transition: 'background 0.15s',
+                    cursor: 'pointer',
+                    border: 'none',
+                    width: '100%',
+                    textAlign: 'left'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -258,6 +285,110 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
           </Card>
         )}
       </div>
+
+      <AnimatePresence>
+        {selectedType && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedType(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.35)',
+              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px',
+              zIndex: 1000,
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 12 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--surface-color)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--hairline)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+                width: '100%',
+                maxWidth: '420px',
+                maxHeight: '80vh',
+                overflowY: 'auto',
+                padding: '22px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                <div>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                    {selectedType.qty} cajas activas
+                  </p>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
+                    {selectedType.label}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setSelectedType(null)}
+                  aria-label="Cerrar"
+                  style={{
+                    background: 'var(--surface-hover)',
+                    border: 'none',
+                    borderRadius: 'var(--radius-pill)',
+                    width: '32px',
+                    height: '32px',
+                    fontSize: '1.1rem',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', margin: '10px 0 14px' }}>
+                {selectedType.clients.length} cliente{selectedType.clients.length !== 1 ? 's' : ''} · pedidos pendientes y listos
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {selectedType.clients.map((c) => (
+                  <div
+                    key={c.client_name}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '10px 12px',
+                      background: 'var(--surface-hover)',
+                      borderRadius: 'var(--radius-sm)',
+                    }}
+                  >
+                    <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-primary)' }}>
+                      {c.client_name}
+                    </span>
+                    <span style={{
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      color: 'var(--accent-primary)',
+                      fontVariantNumeric: 'tabular-nums',
+                      background: 'var(--accent-primary-soft)',
+                      padding: '3px 10px',
+                      borderRadius: 'var(--radius-pill)',
+                    }}>
+                      {c.quantity}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
