@@ -251,4 +251,110 @@ describe("Core Business Logic - Unit Tests", () => {
       expect(boda).toBeUndefined();
     });
   });
+
+  describe("Delivery helpers", () => {
+    // Inline the pure helper logic from deliveryService for testing
+    const computeDeliveredByType = (deliveries: any[]) => {
+      const result: Record<string, number> = {};
+      (deliveries || []).forEach((d) => {
+        result[d.box_type] = (result[d.box_type] || 0) + d.quantity;
+      });
+      return result;
+    };
+
+    const computeRemaining = (items: any[], deliveries: any[]) => {
+      const deliveredByType = computeDeliveredByType(deliveries);
+      return (items || []).map((item) => {
+        const code = item.boxType || item.type;
+        const delivered = deliveredByType[code] || 0;
+        return {
+          boxType: code,
+          total: item.quantity,
+          delivered,
+          remaining: item.quantity - delivered,
+        };
+      });
+    };
+
+    const isFullyDelivered = (items: any[], deliveries: any[]) => {
+      const remaining = computeRemaining(items, deliveries);
+      return remaining.length > 0 && remaining.every((r) => r.remaining <= 0);
+    };
+
+    it("computes delivered quantity per box_type for an order", () => {
+      const deliveries = [
+        { order_id: "1", box_type: "ORQUIDEA", quantity: 100 },
+        { order_id: "1", box_type: "ORQUIDEA", quantity: 200 },
+        { order_id: "1", box_type: "CLAVEL", quantity: 50 },
+      ];
+      const orderItems = [
+        { boxType: "ORQUIDEA", quantity: 500 },
+        { boxType: "CLAVEL", quantity: 500 },
+      ];
+
+      const remaining = computeRemaining(orderItems, deliveries);
+
+      expect(remaining).toEqual([
+        { boxType: "ORQUIDEA", total: 500, delivered: 300, remaining: 200 },
+        { boxType: "CLAVEL", total: 500, delivered: 50, remaining: 450 },
+      ]);
+    });
+
+    it("is fully delivered when remaining === 0 for all items", () => {
+      const items = [
+        { boxType: "ORQUIDEA", quantity: 300 },
+        { boxType: "CLAVEL", quantity: 50 },
+      ];
+      const deliveries = [
+        { box_type: "ORQUIDEA", quantity: 300 },
+        { box_type: "CLAVEL", quantity: 50 },
+      ];
+      expect(isFullyDelivered(items, deliveries)).toBe(true);
+    });
+
+    it("is not fully delivered if any item has remaining > 0", () => {
+      const items = [
+        { boxType: "ORQUIDEA", quantity: 300 },
+        { boxType: "CLAVEL", quantity: 500 },
+      ];
+      const deliveries = [
+        { box_type: "ORQUIDEA", quantity: 300 },
+        { box_type: "CLAVEL", quantity: 50 },
+      ];
+      expect(isFullyDelivered(items, deliveries)).toBe(false);
+    });
+
+    it("handles empty deliveries (nothing delivered yet)", () => {
+      const items = [
+        { boxType: "BODA", quantity: 100 },
+      ];
+      const remaining = computeRemaining(items, []);
+      expect(remaining).toEqual([
+        { boxType: "BODA", total: 100, delivered: 0, remaining: 100 },
+      ]);
+      expect(isFullyDelivered(items, [])).toBe(false);
+    });
+
+    it("handles over-delivery gracefully (remaining goes negative)", () => {
+      const items = [{ boxType: "BODA", quantity: 100 }];
+      const deliveries = [{ box_type: "BODA", quantity: 150 }];
+      const remaining = computeRemaining(items, deliveries);
+      expect(remaining[0].remaining).toBe(-50);
+      expect(isFullyDelivered(items, deliveries)).toBe(true);
+    });
+
+    it("returns false for fully delivered with no items", () => {
+      expect(isFullyDelivered([], [])).toBe(false);
+    });
+
+    it("aggregates deliveredByType correctly across multiple deliveries", () => {
+      const deliveries = [
+        { box_type: "BODA", quantity: 10 },
+        { box_type: "BODA", quantity: 20 },
+        { box_type: "XV", quantity: 5 },
+      ];
+      const result = computeDeliveredByType(deliveries);
+      expect(result).toEqual({ BODA: 30, XV: 5 });
+    });
+  });
 });

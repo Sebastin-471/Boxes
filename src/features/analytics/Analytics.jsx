@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BarChart3, Download } from 'lucide-react';
+import { BarChart3, Download, Truck } from 'lucide-react';
 import { exportToCSV } from '../../utils/exportUtils';
 import { motion } from 'framer-motion';
 import {
@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function Analytics({ orders, returns }) {
+export default function Analytics({ orders, returns, deliveries = [] }) {
   const { products, getProductLabel } = useProducts();
   const [monthsToShow, setMonthsToShow] = useState(6);
 
@@ -144,6 +144,19 @@ export default function Analytics({ orders, returns }) {
   }, [productMonthlyData]);
 
   const totalDelivered = monthlyData.reduce((sum, m) => sum + m.entregadas, 0);
+
+  // Partial deliveries breakdown by box type
+  const deliveriesByType = useMemo(() => {
+    const totals = {};
+    (deliveries || []).forEach((d) => {
+      totals[d.box_type] = (totals[d.box_type] || 0) + d.quantity;
+    });
+    return Object.entries(totals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([box_type, quantity]) => ({ box_type, quantity, label: getProductLabel(box_type) }));
+  }, [deliveries, getProductLabel]);
+
+  const totalPartialDelivered = deliveriesByType.reduce((sum, d) => sum + d.quantity, 0);
 
   return (
     <div className="view-container">
@@ -298,6 +311,58 @@ export default function Analytics({ orders, returns }) {
           {productMonthlyData.length > 10 && (
             <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '12px' }}>
               +{productMonthlyData.length - 10} productos más
+            </p>
+          )}
+        </Card>
+      )}
+
+      {/* Partial deliveries breakdown */}
+      {deliveriesByType.length > 0 && (
+        <Card style={{ padding: '20px 12px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '8px', marginBottom: '4px' }}>
+            <Truck size={16} color="var(--accent-success)" />
+            <p className="section-subtitle" style={{ margin: 0 }}>
+              Despachos Parciales por Tipo
+            </p>
+          </div>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', paddingLeft: '8px', marginBottom: '12px' }}>
+            Total despachado: <span style={{ color: 'var(--accent-success)', fontWeight: 600 }}>{totalPartialDelivered} cajas</span>
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 8px' }}>
+            {deliveriesByType.slice(0, 10).map((item, idx) => {
+              const maxQty = deliveriesByType[0]?.quantity || 1;
+              const width = Math.max((item.quantity / maxQty) * 100, 4);
+              return (
+                <div key={item.boxType}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      {item.label.replace('Caja ', '')}
+                    </span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent-success)', fontVariantNumeric: 'tabular-nums' }}>
+                      {item.quantity}
+                    </span>
+                  </div>
+                  <div style={{ height: '6px', background: 'var(--hairline)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${width}%` }}
+                      transition={{ delay: idx * 0.05, duration: 0.6 }}
+                      style={{
+                        height: '100%',
+                        background: `linear-gradient(90deg, var(--accent-success), var(--accent-success)88)`,
+                        borderRadius: '3px',
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {deliveriesByType.length > 10 && (
+            <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '12px' }}>
+              +{deliveriesByType.length - 10} tipos más
             </p>
           )}
         </Card>

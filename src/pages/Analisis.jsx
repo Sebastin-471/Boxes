@@ -3,7 +3,7 @@ import Analytics from '../features/analytics/Analytics';
 
 import { motion } from 'framer-motion';
 
-export default function Analisis({ orders, returns }) {
+export default function Analisis({ orders, returns, deliveries }) {
   return (
     <motion.div 
       className="page-fade"
@@ -11,7 +11,7 @@ export default function Analisis({ orders, returns }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
     >
-      <Analytics orders={orders} returns={returns} />
+      <Analytics orders={orders} returns={returns} deliveries={deliveries} />
     </motion.div>
   );
 }

@@ -25,6 +25,7 @@ import AuthPage from './features/auth/AuthPage';
 import { useOrders } from './features/orders/useOrders';
 import { useReturns } from './features/returns/useReturns';
 import { useRealtimeNotifications } from './hooks/useRealtimeNotifications';
+import { useDeliveries } from './hooks/useDeliveries';
 import { requestNotificationPermission } from './utils/notificationService';
 
 function AppContent() {
@@ -37,6 +38,7 @@ function AppContent() {
 
   const { orders, setOrders, loading: ordersLoading, refetch: refetchOrders } = useOrders();
   const { returns, loading: returnsLoading, refetch: refetchReturns } = useReturns();
+  const { deliveries } = useDeliveries();
   const toast = useToast();
 
   useRealtimeNotifications();
@@ -138,7 +140,7 @@ function AppContent() {
 
     switch (activeTab) {
       case 'resumen':
-        return <Resumen key="resumen" orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} onTabNavigate={handleNavigate} />;
+        return <Resumen key="resumen" orders={orders} returns={returns} deliveries={deliveries} onOrderClick={setSelectedOrder} loading={ordersLoading} onTabNavigate={handleNavigate} />;
       case 'dashboard':
         return <Pedidos key="pedidos" orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} refetch={refetchOrders} />;
       case 'new':
@@ -146,11 +148,11 @@ function AppContent() {
       case 'returns':
         return <Devolver key="devolver" onReturnCreated={handleReturnCreated} />;
       case 'analytics':
-        return <Analisis key="analytics" orders={orders} returns={returns} />;
+        return <Analisis key="analytics" orders={orders} returns={returns} deliveries={deliveries} />;
       case 'history':
         return <Historial key="history" orders={orders} onOrderClick={setSelectedOrder} loading={ordersLoading} refetch={refetchOrders} />;
       default:
-        return <Resumen key="resumen-def" orders={orders} returns={returns} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
+        return <Resumen key="resumen-def" orders={orders} returns={returns} deliveries={deliveries} onOrderClick={setSelectedOrder} loading={ordersLoading} />;
     }
   };
 

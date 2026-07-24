@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Package, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight, Box } from 'lucide-react';
+import { Package, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight, Box, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   startOfDay, endOfDay,
@@ -10,7 +10,7 @@ import {
 import Card from '../../components/common/Card';
 import { useProducts } from '../../hooks/useProducts';
 
-export default function Dashboard({ orders, returns, onTabNavigate }) {
+export default function Dashboard({ orders, returns, deliveries = [], onTabNavigate }) {
   const { getProductLabel } = useProducts();
   const [selectedType, setSelectedType] = useState(null);
 
@@ -92,6 +92,31 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
           .map(([client_name, quantity]) => ({ client_name, quantity })),
       }));
   }, [orders, getProductLabel]);
+
+  // Pending deliveries for READY orders — shows remaining per order
+  const pendingDeliveryOrders = useMemo(() => {
+    const readyOrders = orders.filter(o => o.status === 'READY');
+    if (readyOrders.length === 0 || deliveries.length === 0) return [];
+
+    return readyOrders.map(order => {
+      const orderDeliveries = deliveries.filter(d => d.order_id === order.id);
+      if (orderDeliveries.length === 0) return null;
+
+      const totalOrdered = (order.items || []).reduce((s, i) => s + i.quantity, 0);
+      const totalDelivered = orderDeliveries.reduce((s, d) => s + d.quantity, 0);
+      const remaining = totalOrdered - totalDelivered;
+
+      if (remaining <= 0) return null;
+      return {
+        id: order.id,
+        client_name: order.client_name,
+        totalOrdered,
+        totalDelivered,
+        remaining,
+        pct: Math.min(Math.round((totalDelivered / totalOrdered) * 100), 100),
+      };
+    }).filter(Boolean).sort((a, b) => a.pct - b.pct);
+  }, [orders, deliveries]);
 
   const activeOrdersCount = orders.filter(o => o.status === 'CREATED' || o.status === 'READY').length;
 
@@ -285,6 +310,68 @@ export default function Dashboard({ orders, returns, onTabNavigate }) {
           </Card>
         )}
       </div>
+
+      {/* Pending deliveries — orders with partial progress */}
+      {pendingDeliveryOrders.length > 0 && (
+        <div style={{ marginTop: '28px' }}>
+          <h3 className="section-title">Despachos en Progreso</h3>
+          <Card style={{ padding: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {pendingDeliveryOrders.map((o, idx) => (
+                <div key={o.id}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{
+                        width: '28px', height: '28px',
+                        background: 'var(--accent-success-soft)',
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <Truck size={14} color="var(--accent-success)" />
+                      </div>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>
+                        {o.client_name}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{
+                        fontSize: '0.8rem', fontWeight: 600,
+                        color: 'var(--accent-success)',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        {o.totalDelivered}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>/</span>
+                      <span style={{
+                        fontSize: '0.8rem', fontWeight: 500,
+                        color: 'var(--text-secondary)',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        {o.totalOrdered}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ height: '4px', background: 'var(--surface-hover)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${o.pct}%` }}
+                      transition={{ delay: idx * 0.05, duration: 0.6 }}
+                      style={{
+                        height: '100%',
+                        background: 'var(--accent-success)',
+                        borderRadius: '2px',
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginTop: '12px', textAlign: 'right' }}>
+              {pendingDeliveryOrders.length} pedido{pendingDeliveryOrders.length !== 1 ? 's' : ''} con despachos parciales
+            </p>
+          </Card>
+        </div>
+      )}
 
       <AnimatePresence>
         {selectedType && (

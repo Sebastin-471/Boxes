@@ -4,7 +4,7 @@ import OrderList from '../features/orders/OrderList';
 
 import { motion } from 'framer-motion';
 
-export default function Resumen({ orders, returns, onOrderClick, loading, onTabNavigate }) {
+export default function Resumen({ orders, returns, deliveries, onOrderClick, loading, onTabNavigate }) {
   const activeOrders = orders.filter(o => o.status === 'CREATED' || o.status === 'READY').slice(0, 3);
 
   return (
@@ -14,7 +14,7 @@ export default function Resumen({ orders, returns, onOrderClick, loading, onTabN
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
     >
-      <Dashboard orders={orders} returns={returns} onTabNavigate={onTabNavigate} />
+      <Dashboard orders={orders} returns={returns} deliveries={deliveries} onTabNavigate={onTabNavigate} />
     </motion.div>
   );
 }

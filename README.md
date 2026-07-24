@@ -22,7 +22,8 @@ Sistema de gestión de pedidos y logística optimizado para dispositivos móvile
 
 ### 📦 Gestión Logística
 - **Flujo Completo**: Seguimiento detallado: *Pendiente → En Preparación → Listo → Entregado*.
-- **Registro de Responsables**: Seguimiento de quién creó el pedido y quién realizó la entrega final.
+- **Gestión Avanzada de Entregas**: Soporte para entregas parciales simultáneas y entregas totales con un clic, garantizando un historial consistente sin fricción.
+- **Registro de Responsables**: Seguimiento de quién creó el pedido y quién realizó la entrega final, con una interfaz visual intuitiva (Grid UI).
 - **Gestión de Devoluciones**: Módulo dedicado para el registro de devoluciones con impacto automático en las métricas.
 - **Autocompletado**: Búsqueda inteligente de clientes y productos para agilizar el registro.
 
